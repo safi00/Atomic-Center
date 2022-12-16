@@ -12,21 +12,20 @@ It’s going to be 3d and is currently undecided if I can do multiple levels or 
 Atomic Center can be played by 2-5 players, turn order is decided at the start of the game by rolling dice to see who rolls higher. 
 Turn order is decided by highest to lowest. The game can be played alone but some dynamic mechanics would not be as harsh. 
 The player uses 2 D6 dices to move around the board. As the player moves and lands on different tiles it has different prompts.
-You are not allowed to walk backwards; each time you pass the start you get a point. \
+You are not allowed to walk backwards; each time you pass the start you get a point. 
 
 The current tiles are: \
 •	If you land on a white tile then you get a hint, with that hint you can try and guess the element. If you don’t guess the element, you can stay there the next turn for another hint or move to another tile to guess another element.\
 •	If you land on a purple tile, then you get an opportunity to answer a chemistry question for a 2 points. You answer wrong you lose a point. \
 •	If you land on a red tile, everybody on the board must give their hand to the person on their left.\
 •	If you land on a blue tile, then you get to grab a card from the middle. it’s going to be a random event, that ranges from good to bad. \
-The random events in the normal game are:\
+The random events on from the blue tiles in the base game are:\
 o	Quiz event: you get an opportunity to answer a chemistry question for a point.\
 o	Transport event: Go directly to start.\
 o	Bonus event: +1 hint, turn in the card to get a bonus hint on your next turn.\
 o	Steel event: steal a point from your opponent on your next turn.\
 o	Joker event: +1 on your total points.\
 o	Nuclear event: -1 on your total points.
-
 
 
 I’m looking to add more Dynamic interactions to it, The game is already pretty strong in educational elements by adding guesses and questions whenever the player lands on certain tiles.\
@@ -39,4 +38,4 @@ For powerup ideas I have that: \
 •	Bonus D6 die.\
 •	Bonus D10 die.\
 •	Steal a Die from a player.\
-•	teleport to a player.\
+•	teleport to a player.
