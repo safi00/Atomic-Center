@@ -13,11 +13,10 @@ Atomic Center can be played by 2-5 players, turn order is decided at the start o
 Turn order is decided by highest to lowest. The game can be played alone but some dynamic mechanics would not be as harsh. 
 The player uses 2 D6 dices to move around the board. As the player moves and lands on different tiles it has different prompts.
 You are not allowed to walk backwards; each time you pass the start you get a point. \
+
 The current tiles are: \
-•	If you land on a white tile then you get a hint, with that hint you can try and guess the element.\
-	o	If you don’t guess the element, you can stay there the next turn for another hint or move to another tile to guess another element.\
-•	If you land on a purple tile, then you get an opportunity to answer a chemistry question for a 2 points. \
-	o	You answer wrong you lose a point. \
+•	If you land on a white tile then you get a hint, with that hint you can try and guess the element. If you don’t guess the element, you can stay there the next turn for another hint or move to another tile to guess another element.\
+•	If you land on a purple tile, then you get an opportunity to answer a chemistry question for a 2 points. You answer wrong you lose a point. \
 •	If you land on a red tile, everybody on the board must give their hand to the person on their left.\
 •	If you land on a blue tile, then you get to grab a card from the middle.
 it’s going to be a random event, that ranges from good to bad. \
