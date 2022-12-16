@@ -18,7 +18,8 @@ The current tiles are: \
 •	If you land on a white tile then you get a hint, with that hint you can try and guess the element. If you don’t guess the element, you can stay there the next turn for another hint or move to another tile to guess another element.\
 •	If you land on a purple tile, then you get an opportunity to answer a chemistry question for a 2 points. You answer wrong you lose a point. \
 •	If you land on a red tile, everybody on the board must give their hand to the person on their left.\
-•	If you land on a blue tile, then you get to grab a card from the middle. it’s going to be a random event, that ranges from good to bad. \
+•	If you land on a blue tile, then you get to grab a card from the middle. it’s going to be a random event, that ranges from good to bad. 
+
 The random events on from the blue tiles in the base game are:\
 o	Quiz event: you get an opportunity to answer a chemistry question for a point.\
 o	Transport event: Go directly to start.\
