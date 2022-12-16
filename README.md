@@ -18,14 +18,22 @@ The current tiles are: \
 •	If you land on a white tile then you get a hint, with that hint you can try and guess the element. If you don’t guess the element, you can stay there the next turn for another hint or move to another tile to guess another element.\
 •	If you land on a purple tile, then you get an opportunity to answer a chemistry question for a 2 points. You answer wrong you lose a point. \
 •	If you land on a red tile, everybody on the board must give their hand to the person on their left.\
-•	If you land on a blue tile, then you get to grab a card from the middle.
-it’s going to be a random event, that ranges from good to bad. \
+•	If you land on a blue tile, then you get to grab a card from the middle. it’s going to be a random event, that ranges from good to bad. \
+The random events in the normal game are:\
+o	Quiz event: you get an opportunity to answer a chemistry question for a point.\
+o	Transport event: Go directly to start.\
+o	Bonus event: +1 hint, turn in the card to get a bonus hint on your next turn.\
+o	Steel event: steal a point from your opponent on your next turn.\
+o	Joker event: +1 on your total points.\
+o	Nuclear event: -1 on your total points.
+
+
 
 I’m looking to add more Dynamic interactions to it, The game is already pretty strong in educational elements by adding guesses and questions whenever the player lands on certain tiles.\
 By giving the player points and a “power-up” should help but i shouldnt make it too drastic but i'll have to see balance wise. The game doesn’t necessarily needs you to have ALOT prior knowledge of chemistry, but atleat some. One of the early ideas is to have the player get a ui at the start of their turn with move/power-up/view map/stay.
-Having a camera all the way above the map for a mini map.\
+Having a camera all the way above the map for a mini map.
 
-The goal is to either get a is to get the most points. The game ends when the win condition is met, either the turn limit is reached (10/25/50/∞/Custom) or the point (10/25/50/∞/Custom). Could have one or both.\
+The goal is to either get a is to get the most points. The game ends when the win condition is met, either the turn limit is reached (10/25/50/∞/Custom) or the point (10/25/50/∞/Custom). Could have one or both.
 
 For powerup ideas I have that: \
 •	Bonus D6 die.\
