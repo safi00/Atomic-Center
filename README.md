@@ -2,7 +2,7 @@
 
 Educatieve games programmeren 2
 
-Would recomend checking the Github Projects link: -Link to Github Project- \
+Would recomend checking the Github Projects link: [-insert link to github project-](https://github.com/users/safi00/projects/3) \
 Or the Github Issues: https://github.com/safi00/Terra/issues \
 Both show progress but i detail more in Github Issues!
 
