@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,10 +9,9 @@ public static class Loader
 {
     public enum Scene
     {
-        GameScene,
-        Loading,
         MainMenu,
-        GameOver,
+        Loading,
+        Map1,
     }
     private static Action onLoaderCallback;
     /// <summary>
