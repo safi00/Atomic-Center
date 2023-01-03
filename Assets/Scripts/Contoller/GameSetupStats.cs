@@ -30,12 +30,13 @@ public class GameSetupStats : MonoBehaviour
     }
 
     [Header("Game Stats")]
-    [SerializeField] public static GameState CurrentGameState;
     [SerializeField] public static int  Players;
+    [SerializeField] public static int  CurrentTurnNumber;
     [SerializeField] public static int  TurnLimit;
     [SerializeField] public static int  PointLimit;
     [SerializeField] public static bool isTurnNoLimit;
     [SerializeField] public static bool isPointNoLimit;
+    [SerializeField] public static GameState CurrentGameState;
 
     [Header("Player Stats")]
     [SerializeField] public static List<Player> PlayersList;
@@ -43,7 +44,8 @@ public class GameSetupStats : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {        
+    {      
+        
     }
     // Update is called once per frame
     void Update()
@@ -62,29 +64,59 @@ public class GameSetupStats : MonoBehaviour
     {
         PointLimit = AmountPoints;
     }
-    public static void SetTurnsUnlimit(bool isItUnlimit)
+    public static void NoTurnLimitSwitch()
     {
-        isTurnNoLimit = isItUnlimit;
+        isTurnNoLimit = !isTurnNoLimit;
     }
-    public static void SetPointsUnlimit(bool isItUnlimit)
+    public static void NoPointLimitSwitch()
     {
-        isPointNoLimit = isItUnlimit;
+        isPointNoLimit = !isPointNoLimit;
     }
-    public static void CheckPointLimit()
+    public static void TurnOnNoTurnLimitSwitch()
     {
-        if (!isTurnNoLimit)
+        isTurnNoLimit = true;
+    }
+    public static void TurnOnNoPointLimitSwitch()
+    {
+        isPointNoLimit = true;
+    }
+    public static int GetPlayerAmount()
+    {
+        return Players;
+    }
+    public static int GetCurrentTurnNumber()
+    {
+        return CurrentTurnNumber;
+    }
+    public static int GetTurnLimit()
+    {
+        return TurnLimit;
+    }
+    public static int GetPointLimit()
+    {
+        return PointLimit;
+    }
+    public static bool GetTurnLimitBool()
+    {
+        return isTurnNoLimit;
+    }
+    public static bool GetPointLimitBool()
+    {
+        return isPointNoLimit;
+    }
+    public static void SetGameState(GameState GameState)
+    {
+        CurrentGameState = GameState;
+    }
+    public static void CheckGameState()
+    {
+        if (true)
         {
 
         }
     }
-    public static void CheckTurnLimit()
+    public static GameState GetGameState()
     {
-        if (!isPointNoLimit)
-        {
-            
-        }
-    }
-    public static void CheckGameState()
-    {
+        return CurrentGameState;
     }
 }
