@@ -7,18 +7,18 @@ using UnityEngine.UI;
 public class Customwindow : MonoBehaviour
 {
     [Header("UI Window")]
-    [SerializeField] public GameObject CustomWindow;
+    [SerializeField] private GameObject CustomWindow;
 
     [Header("Text essentials")]
-    [SerializeField] public Text InfoText;
-    [SerializeField] public TMP_Text PlaceholderText;
-    [SerializeField] public TMP_InputField InputField;
+    [SerializeField] private Text InfoText;
+    [SerializeField] private TMP_Text PlaceholderText;
+    [SerializeField] private TMP_InputField InputField;
 
     [Header("Buttons")]
-    [SerializeField] public GameObject ExitButton;
-    [SerializeField] public GameObject MinusButton;
-    [SerializeField] public GameObject PlusButton;
-    [SerializeField] public GameObject SaveButton;
+    [SerializeField] private GameObject ExitButton;
+    [SerializeField] private GameObject MinusButton;
+    [SerializeField] private GameObject PlusButton;
+    [SerializeField] private GameObject SaveButton;
 
     [Header("Misc")]
     [SerializeField] public static int SetupForResuseTurnPoint;

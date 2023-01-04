@@ -12,6 +12,11 @@ public class GameSetupStats : MonoBehaviour
         GameOver,
         Stats,
     }
+    public enum Map
+    {
+        Map1,
+        Map2,
+    }
     public enum PowerUP
     {
         BonusD6,
@@ -19,42 +24,57 @@ public class GameSetupStats : MonoBehaviour
         StealD6,
         Teleport,
     }
+    public enum Debuff
+    {
+        StolenD6,
+        StolenPowerUP,
+    }
     public class Player
     {
         public int playerid { get; set; }
         public string playername { get; set; }
         public int points { get; set; }
         public int location { get; set; }
-        public List<string> debuffs { get; set; }
+        public List<Debuff> debuffs { get; set; }
         public List<PowerUP> powerups { get; set; }
     }
 
     [Header("Game Stats")]
-    [SerializeField] public static int  Players;
+    [SerializeField] public static int  PlayerAmount;
     [SerializeField] public static int  CurrentTurnNumber;
     [SerializeField] public static int  TurnLimit;
     [SerializeField] public static int  PointLimit;
     [SerializeField] public static bool isTurnNoLimit;
     [SerializeField] public static bool isPointNoLimit;
+    [SerializeField] public static Map SelectedMap;
     [SerializeField] public static GameState CurrentGameState;
 
     [Header("Player Stats")]
     [SerializeField] public static List<Player> PlayersList;
 
-
     // Start is called before the first frame update
     void Start()
-    {      
-        
+    {
     }
     // Update is called once per frame
     void Update()
     {        
     }
-
-    public static void SetPlayers(int AmountPlayers)
+    public static void SetPlayerAmount(int AmountPlayers)
     {
-        Players = AmountPlayers;
+        PlayerAmount = AmountPlayers;      
+    }
+    public static void SetplayerList(List<Player> SavedList) 
+    {
+        PlayersList = new List<Player>();
+        for (int i = 0; i < SavedList.Count; i++)
+        {
+            PlayersList.Add(SavedList[i]);
+        }
+    }
+    public static void SetGameState(GameState GameState)
+    {
+        CurrentGameState = GameState;
     }
     public static void SetTurnLimit(int AmountTurns)
     {
@@ -63,6 +83,18 @@ public class GameSetupStats : MonoBehaviour
     public static void SetPointLimit(int AmountPoints)
     {
         PointLimit = AmountPoints;
+    }
+    public static void SetMap(int MapNumber)
+    {
+        switch (MapNumber)
+        {
+            case 1:
+                SelectedMap = Map.Map1;
+                break;
+            case 2:
+                SelectedMap = Map.Map2;
+                break;
+        }
     }
     public static void NoTurnLimitSwitch()
     {
@@ -82,7 +114,15 @@ public class GameSetupStats : MonoBehaviour
     }
     public static int GetPlayerAmount()
     {
-        return Players;
+        return PlayerAmount;
+    }
+    public static List<Player> GetPlayerList()
+    {
+        return PlayersList;
+    }
+    public static Map GetSelectedMap()
+    {
+        return SelectedMap;
     }
     public static int GetCurrentTurnNumber()
     {
@@ -104,19 +144,16 @@ public class GameSetupStats : MonoBehaviour
     {
         return isPointNoLimit;
     }
-    public static void SetGameState(GameState GameState)
-    {
-        CurrentGameState = GameState;
-    }
-    public static void CheckGameState()
-    {
-        if (true)
-        {
-
-        }
-    }
     public static GameState GetGameState()
     {
         return CurrentGameState;
+    }
+    public static void reset()
+    {
+        PlayerAmount = 0;
+        CurrentTurnNumber = 0;
+        TurnLimit = 0;
+        PointLimit = 0;
+        SelectedMap = 0;    
     }
 }

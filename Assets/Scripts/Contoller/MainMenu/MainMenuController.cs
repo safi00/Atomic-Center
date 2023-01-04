@@ -6,27 +6,29 @@ using UnityEngine.UI;
 public class MainMenuController : MonoBehaviour
 {
     [Header("Main UI Windows")]
-    [SerializeField] public GameObject MainMenuWindow;
-    [SerializeField] public GameObject GameSetupWindow;
-    [SerializeField] public GameObject OptionPanel;
-    [SerializeField] public GameObject CustomUIWindow;
+    [SerializeField] private GameObject MainMenuWindow;
+    [SerializeField] private GameObject GameSetupWindow;
+    [SerializeField] private GameObject OptionPanel;
+    [SerializeField] private GameObject TurnPointUIWindow;
+    [SerializeField] private GameObject CustomUIWindow;
+    [SerializeField] private GameObject MapPlayerUIWindow;
 
     [Header("Game Setup UI Buttons")]
-    [SerializeField] public GameObject StartButton;
-    [SerializeField] public GameObject HomeButton;
-    [SerializeField] public GameObject CustomTurnButton;
-    [SerializeField] public GameObject CustomPointButton;
-    [SerializeField] public GameObject NoLimitTurnButton;
-    [SerializeField] public GameObject NoLimitPointButton;
+    [SerializeField] private GameObject NextButton;
+    [SerializeField] private GameObject HomeButton;
+    [SerializeField] private GameObject CustomTurnButton;
+    [SerializeField] private GameObject CustomPointButton;
+    [SerializeField] private GameObject NoLimitTurnButton;
+    [SerializeField] private GameObject NoLimitPointButton;
 
     [Header("Game Setup UI Texts")]
-    [SerializeField] public Text PlayersDisplayText;
-    [SerializeField] public Text TurnsDisplayText;
-    [SerializeField] public Text PointsDisplayText;
+    [SerializeField] private Text PlayersDisplayText;
+    [SerializeField] private Text TurnsDisplayText;
+    [SerializeField] private Text PointsDisplayText;
 
     [Header("Misc")]
-    [SerializeField] public bool isGameSetupReady;
-    [SerializeField] public bool NoLimitCheck;
+    [SerializeField] private bool isGameSetupReady;
+    [SerializeField] private bool NoLimitCheck;
     // Start is called before the first frame update
     void Start()
     {
@@ -38,9 +40,21 @@ public class MainMenuController : MonoBehaviour
     {
         TextCheck();
     }
-    public void StartGame()
+    public void BackToMainMenu()
     {
-        Loader.Load(Loader.Scene.Map1);
+        GameSetupWindow.SetActive(false);
+        MainMenuWindow.SetActive(true);
+        GameSetupStats.reset();
+    }
+    public void ToGameSetupUI()
+    {
+        MainMenuWindow.SetActive(false);
+        GameSetupWindow.SetActive(true);
+    }
+    public void ToMapSelectUI()
+    {
+        TurnPointUIWindow.SetActive(false);
+        MapPlayerUIWindow.SetActive(true);
     }
     public void ShowOptions()
     {
@@ -54,13 +68,13 @@ public class MainMenuController : MonoBehaviour
     {
         Application.Quit();
     }
-
     public void TextCheck()
     {
         ButtonCheck();
         switch (GameSetupStats.GetPlayerAmount())
         {
             case < 1:
+                PlayersDisplayText.text = "-";
                 break;
             case > 0:
                 PlayersDisplayText.text = "" + GameSetupStats.GetPlayerAmount();
@@ -70,6 +84,7 @@ public class MainMenuController : MonoBehaviour
         switch (GameSetupStats.GetTurnLimit())
         {
             case < 1:
+                TurnsDisplayText.text = "-";
                 break;
             case < 100:
                 TurnsDisplayText.text = "" + GameSetupStats.GetTurnLimit();
@@ -84,6 +99,7 @@ public class MainMenuController : MonoBehaviour
         switch (GameSetupStats.GetPointLimit())
         {
             case < 1:
+                PointsDisplayText.text = "-";
                 break;
             case < 100:
                 PointsDisplayText.text = "" + GameSetupStats.GetPointLimit();
@@ -98,32 +114,32 @@ public class MainMenuController : MonoBehaviour
         switch (isGameSetupReady)
         {
             case true:
-                StartButton.GetComponent<Button>().interactable = true;
+                NextButton.GetComponent<Button>().interactable = true;
                 break;
             case false:
-                StartButton.GetComponent<Button>().interactable = false;
+                NextButton.GetComponent<Button>().interactable = false;
                 break;
         }
     }
     public void SetPlayersToOne()
     {
-        GameSetupStats.SetPlayers(1);
+        GameSetupStats.SetPlayerAmount(1);
     }
     public void SetPlayersToTwo()
     {
-        GameSetupStats.SetPlayers(2);
+        GameSetupStats.SetPlayerAmount(2);
     }
     public void SetPlayersToThree()
     {
-        GameSetupStats.SetPlayers(3);
+        GameSetupStats.SetPlayerAmount(3);
     }
     public void SetPlayersToFour()
     {
-        GameSetupStats.SetPlayers(4);
+        GameSetupStats.SetPlayerAmount(4);
     }
     public void SetPlayersToFive()
     {
-        GameSetupStats.SetPlayers(5);
+        GameSetupStats.SetPlayerAmount(5);
     }
     public void SetTurnsToTen()
     {
@@ -176,6 +192,10 @@ public class MainMenuController : MonoBehaviour
         if (GameSetupStats.GetPlayerAmount() > 0 && GameSetupStats.GetTurnLimit() > 0 && GameSetupStats.GetPointLimit() > 0)
         {
             isGameSetupReady = true;
+        }
+        else
+        {
+            isGameSetupReady = false;
         }
     }
 }
