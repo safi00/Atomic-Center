@@ -29,7 +29,7 @@ public class GameSetupStats : MonoBehaviour
         StolenD6,
         StolenPowerUP,
     }
-    public class Player
+    public class PlayerStats
     {
         public int playerid { get; set; }
         public string playername { get; set; }
@@ -50,7 +50,7 @@ public class GameSetupStats : MonoBehaviour
     [SerializeField] public static GameState CurrentGameState;
 
     [Header("Player Stats")]
-    [SerializeField] public static List<Player> PlayersList;
+    [SerializeField] public static List<PlayerStats> PlayersList;
 
     // Start is called before the first frame update
     void Start()
@@ -64,9 +64,9 @@ public class GameSetupStats : MonoBehaviour
     {
         PlayerAmount = AmountPlayers;      
     }
-    public static void SetplayerList(List<Player> SavedList) 
+    public static void SetplayerList(List<PlayerStats> SavedList) 
     {
-        PlayersList = new List<Player>();
+        PlayersList = new List<PlayerStats>();
         for (int i = 0; i < SavedList.Count; i++)
         {
             PlayersList.Add(SavedList[i]);
@@ -116,7 +116,7 @@ public class GameSetupStats : MonoBehaviour
     {
         return PlayerAmount;
     }
-    public static List<Player> GetPlayerList()
+    public static List<PlayerStats> GetPlayerList()
     {
         return PlayersList;
     }

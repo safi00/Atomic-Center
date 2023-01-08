@@ -127,12 +127,12 @@ public class MapWindow : MonoBehaviour
                 break;
         }
     }
-    private List<Player> SavePlayers()
+    private List<PlayerStats> SavePlayers()
     {
-        List<Player> ReturnList = new List<Player>(); 
+        List<PlayerStats> ReturnList = new List<PlayerStats>(); 
         for (int i = 1; i < (PlayerAmount + 1); i++)
         {
-            Player player = new Player();
+            PlayerStats player = new PlayerStats();
             player.playerid = i;
             switch (i)
             {
