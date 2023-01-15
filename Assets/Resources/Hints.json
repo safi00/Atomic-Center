@@ -1,0 +1,64 @@
+[
+  {
+    "difficultyid": 0,
+    "difficultytype": "Easy",
+    "elementlist": [
+      {
+        "elementid": 0,
+        "elementname": "Waterstoff",
+        "elementcode": "H",
+        "elementhints": [
+          "Het hoort tot de groep niet-metalen, het is meestal gasvormig. Het is de meest voorkomende element in de helaal.",
+          "Het hoort tot geen enkele groep (metalen, niet-metalen en semi-metalen).",
+          "Atoomnummer 1."
+        ]
+      },
+      {
+        "elementid": 1,
+        "elementname": "Potassium",
+        "elementcode": "K",
+        "elementhints": [
+          "Het is een metaal en in het Overgangsmetaal groep, het is meestal vast, met een smeltpunt van 1084 °C.",
+          "Het is een buigzaam metaal en eenvoudig te vervormen, wordt gebruikt in het maken van draden, muntgeld en videokaarten.",
+          "Atoomnummer 29."
+        ]
+      }
+    ]
+  },
+  {
+    "difficultyid": 1,
+    "difficultytype": "Hard",
+    "elementlist": [
+      {
+        "elementid": 0,
+        "elementname": "Waterstoff",
+        "elementcode": "H",
+        "elementhints": [
+          "Het hoort tot de groep niet-metalen, het is meestal gasvormig. Het is de meest voorkomende element in de helaal.",
+          "Het hoort tot geen enkele groep (metalen, niet-metalen en semi-metalen).",
+          "Atoomnummer 1."
+        ]
+      },
+      {
+        "elementid": 1,
+        "elementname": "Potassium",
+        "elementcode": "K",
+        "elementhints": [
+          "Het is een metaal en in het Overgangsmetaal groep, het is meestal vast, met een smeltpunt van 1084 °C.",
+          "Het is een buigzaam metaal en eenvoudig te vervormen, wordt gebruikt in het maken van draden, muntgeld en videokaarten.",
+          "Atoomnummer 29."
+        ]
+      },
+      {
+        "elementid": 29,
+        "elementname": "Zink",
+        "elementcode": "Zn",
+        "elementhints": [
+          "Het is een metaal en in het Overgangsmetaal groep, het is meestal vast, met een smeltpunt van 420 °C.",
+          "Het is momenteel het 4e meest geconsumeerde metaal ter wereld, na ijzer, aluminium en koper. het is een natuurlijk bestanddeel van de aarde en inherent aan onze omgeving.",
+          "Atoomnummer 30."
+        ]
+      }
+    ]
+  }
+]
