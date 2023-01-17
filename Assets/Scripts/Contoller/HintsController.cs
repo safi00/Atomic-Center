@@ -32,6 +32,7 @@ public class HintsController : MonoBehaviour
     [SerializeField] public bool wrongAnswer;
     [SerializeField] public GameObject hurtScript;
     [SerializeField] public GameObject wrongAnswerPanel;
+    public static int? MyChosenElement;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +42,10 @@ public class HintsController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (MyChosenElement != null) 
+        {
+            Debug.Log(MyChosenElement);
+        }
         if (wrongAnswer)
         {
             if (Input.anyKeyDown)
@@ -52,8 +57,6 @@ public class HintsController : MonoBehaviour
     }
     private void DebuggingCode(List<Data> Data) 
     {
-        Debug.Log(Data[0].Difficultytype);
-        Debug.Log(Data[0].Elementlist[0].Elementcode);
     }
     /// <summary>
     /// This method prepares the questions and answer and qaches the question.
@@ -264,7 +267,7 @@ public class HintsController : MonoBehaviour
     {
         [JsonProperty("difficultyid")]   private int difficultyid;
         [JsonProperty("difficultytype")] private string difficultytype;
-        [JsonProperty("elementlist")]    private List<Elementlist> elementlist;
+        [JsonProperty("elementlist")]    private List<Element> elementlist;
         public int Difficultyid
         {
             get { return difficultyid; }
@@ -273,13 +276,13 @@ public class HintsController : MonoBehaviour
         {
             get { return difficultytype; }
         }
-        public List<Elementlist> Elementlist
+        public List<Element> Elementlist
         {
             get { return elementlist; }
         }
     }
     [System.Serializable]
-    public class Elementlist
+    public class Element
     {
         [JsonProperty("elementid")]    private int elementid;
         [JsonProperty("elementname")]  private string elementname;
