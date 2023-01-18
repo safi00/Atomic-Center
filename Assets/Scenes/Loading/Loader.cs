@@ -12,6 +12,7 @@ public static class Loader
         MainMenu,
         Loading,
         Map1,
+        Map2,
     }
     private static Action onLoaderCallback;
     /// <summary>

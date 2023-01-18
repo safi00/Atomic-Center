@@ -217,6 +217,7 @@ public class MapWindow : MonoBehaviour
     }
     public void StartGame()
     {
+        GameSetupStats.SetGameState(GameState.Playing);
         GameSetupStats.SetplayerList(SavePlayers());
         Loader.Load(ConvertMapToScene());
     }
