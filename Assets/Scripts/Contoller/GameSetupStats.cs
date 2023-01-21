@@ -4,41 +4,6 @@ using UnityEngine;
 
 public class GameSetupStats : MonoBehaviour
 {
-    public enum GameState
-    {
-        Setup,
-        Playing,
-        Paused,
-        GameOver,
-        Stats,
-    }
-    public enum Map
-    {
-        Map1,
-        Map2,
-    }
-    public enum PowerUP
-    {
-        BonusD6,
-        BonusD10,
-        StealD6,
-        Teleport,
-    }
-    public enum Debuff
-    {
-        StolenD6,
-        StolenPowerUP,
-    }
-    public class PlayerStats
-    {
-        public int playerid { get; set; }
-        public string playername { get; set; }
-        public int points { get; set; }
-        public int location { get; set; }
-        public List<Debuff> debuffs { get; set; }
-        public List<PowerUP> powerups { get; set; }
-    }
-
     [Header("Game Stats")]
     [SerializeField] public static int  PlayerAmount;
     [SerializeField] public static int  CurrentTurnNumber;
@@ -154,6 +119,40 @@ public class GameSetupStats : MonoBehaviour
         CurrentTurnNumber = 0;
         TurnLimit = 0;
         PointLimit = 0;
-        SelectedMap = 0;    
+        SelectedMap = 0;
+    }
+    public enum GameState
+    {
+        Setup,
+        Playing,
+        Paused,
+        GameOver,
+        Stats,
+    }
+    public enum Map
+    {
+        Map1,
+        Map2,
+    }
+    public enum PowerUP
+    {
+        BonusD6,
+        BonusD10,
+        StealD6,
+        Teleport,
+    }
+    public enum Debuff
+    {
+        StolenD6,
+        StolenPowerUP,
+    }
+    public class PlayerStats
+    {
+        public int playerid { get; set; }
+        public string playername { get; set; }
+        public int points { get; set; }
+        public int location { get; set; }
+        public List<Debuff> debuffs { get; set; }
+        public List<PowerUP> powerups { get; set; }
     }
 }
