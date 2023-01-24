@@ -1,9 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using static GameSetupStats;
 using static PlayerMovement;
-using static UnityEngine.GraphicsBuffer;
 
 public class GameController : MonoBehaviour
 {
@@ -15,12 +15,23 @@ public class GameController : MonoBehaviour
     [SerializeField] private int  PlayerAmount;
     [SerializeField] private bool InfiniteRounds;
     [SerializeField] private bool InfiniteScore;
+    [SerializeField] public GameState CurrentState;
     [SerializeField] public NodesController CurrentRoute;
+    [SerializeField] private List<PlayerHierarchy> RollOrder;
 
     [Header("PlayersPrefabList")]
     [SerializeField] private GameObject[] PlayerPrefabs;
     [SerializeField] private GameObject PlayersParentObject;
     [SerializeField] private List<GameObject> Players = new List<GameObject>();
+
+    [Header("UI")]
+    [SerializeField] private GameObject UIScores;
+    [SerializeField] private GameObject UIScore1;
+    [SerializeField] private GameObject UIScore2;
+    [SerializeField] private GameObject UIScore3;
+    [SerializeField] private GameObject UIScore4;
+    [SerializeField] private GameObject UIScore5;
+    [HideInInspector] private List<GameObject> UIScoreLists = new List<GameObject>();
 
     [Header("GameStatsController")]
     [SerializeField] public GameSetupStats GameStats;
@@ -35,11 +46,15 @@ public class GameController : MonoBehaviour
     }
     private void Setup() 
     {
+        TurnOffScoreUI();
+        SetupUIList();
+        SetupBaseRollOrder();
         TurnCapicity  = GameSetupStats.GetTurnLimit();
         PointCapicity = GameSetupStats.GetPointLimit();
         PlayerAmount  = GameSetupStats.GetPlayerAmount();
         InfiniteRounds= GameSetupStats.GetTurnLimitBool();
         InfiniteScore = GameSetupStats.GetPointLimitBool();
+        SetGameState(GameState.Rolling);
         MakePlayers(PlayerAmount);
     }
     private void MakePlayers(int amount) 
@@ -48,16 +63,15 @@ public class GameController : MonoBehaviour
         {
             GameObject Player = Instantiate(PlayerPrefabs[i], PlayerPostion(i), PlayerPrefabs[i].transform.rotation);
             PlayerMovement PlayerScript = Player.GetComponent<PlayerMovement>();
+
             PlayerScript.PlayerHier = PlayerHeirSetter(i);
             PlayerScript.PlayerName = GameSetupStats.GetPlayerList()[i].playername;
             PlayerScript.CurrentRoute = CurrentRoute;
-
-            //Player.GetComponent<PlayerMovement>().PlayerHier = PlayerHeirSetter(i);
-            //Player.GetComponent<PlayerMovement>().PlayerName = GameSetupStats.GetPlayerList()[i].playername;
-            //Player.GetComponent<PlayerMovement>().CurrentRoute = CurrentRoute;
+            PlayerScript.isPlayerOrderRolled = false;
 
             Players.Add(Player);
-            Player.transform.parent = PlayersParentObject.transform;
+            Player.transform.parent = PlayersParentObject.transform; 
+            SetupScores(PlayerAmount);
         }
     }
     private PlayerHierarchy PlayerHeirSetter(int amount)
@@ -105,6 +119,66 @@ public class GameController : MonoBehaviour
                 break;
         }
         return ReturnPos;
+    }
+    private void SetupScores(int PlayerAmount)
+    {
+        for (int i = 0; i < PlayerAmount; i++)
+        {
+            UIScoreLists[i].SetActive(true);
+        }
+    }
+    private void TurnOffScoreUI()
+    {
+        for (int i = 0; i < UIScoreLists.Count; i++)
+        {
+            UIScoreLists[i].SetActive(false);
+        }
+    }
+    private void SetupUIList()
+    {
+        UIScoreLists.Add(UIScore1);
+        UIScoreLists.Add(UIScore2);
+        UIScoreLists.Add(UIScore3);
+        UIScoreLists.Add(UIScore4);
+        UIScoreLists.Add(UIScore5);
+    }
+    private void SetGameState(GameState GameState)
+    {
+        GameSetupStats.SetGameState(GameState);
+        CurrentGameState = GameSetupStats.GetGameState();
+    }
+    private void SetupBaseRollOrder()
+    {
+        RollOrder = new List<PlayerHierarchy>() {
+            PlayerHierarchy.Player1,
+            PlayerHierarchy.Player2,
+            PlayerHierarchy.Player3,
+            PlayerHierarchy.Player4,
+            PlayerHierarchy.Player5, 
+        };
+    }
+    public List<int> SortRollOrderList(List<int> list)
+    {
+        // Sorting using a single loop
+        for (int j = 0; j < PlayerAmount - 1; j++)
+        {
+            // Checking the condition for two
+            // simultaneous elements of the array
+            if (list[j] < list[j + 1])
+            {
+                // Swapping the elements.
+                int temp = list[j];
+                list[j] = list[j + 1];
+                list[j + 1] = temp;
+
+                // updating the value of j = -1
+                // so after getting updated for j++
+                // in the loop it becomes 0 and
+                // the loop begins from the start.
+                j = -1;
+            }
+        }
+        return list;
     }
     public static void CheckTurnLimit()
     {

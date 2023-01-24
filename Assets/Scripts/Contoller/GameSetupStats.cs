@@ -124,6 +124,7 @@ public class GameSetupStats : MonoBehaviour
     public enum GameState
     {
         Setup,
+        Rolling,
         Playing,
         Paused,
         GameOver,

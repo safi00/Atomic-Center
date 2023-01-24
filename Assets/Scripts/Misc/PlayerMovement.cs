@@ -14,9 +14,9 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Hidden MovementStats")]
     [HideInInspector] public  int  RouteSteps;
-    [HideInInspector] private int  RoutePosition;
+    [HideInInspector] public int  RoutePosition;
     [HideInInspector] private bool isMoving;
-    [HideInInspector] private bool isPlayerOrderRolled;
+    [HideInInspector] public bool isPlayerOrderRolled;
 
     [Header("Route")]
     [SerializeField] public NodesController CurrentRoute;
