@@ -151,8 +151,8 @@ public class GameSetupStats : MonoBehaviour
     {
         public int playerid { get; set; }
         public string playername { get; set; }
-        public int points { get; set; }
-        public int location { get; set; }
+        public int playerscore { get; set; }
+        public int playerlocation { get; set; }
         public List<Debuff> debuffs { get; set; }
         public List<PowerUP> powerups { get; set; }
     }

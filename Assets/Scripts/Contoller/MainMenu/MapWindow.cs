@@ -187,7 +187,7 @@ public class MapWindow : MonoBehaviour
                     }
                     break;
             }
-            player.points = 0;
+            player.playerscore = 0;
             player.debuffs = new List<Debuff>();
             player.powerups = new List<PowerUP>();
             ReturnList.Add(player);

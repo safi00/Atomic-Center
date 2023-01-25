@@ -14,25 +14,26 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Hidden MovementStats")]
     [HideInInspector] public  int  RouteSteps;
-    [HideInInspector] public int  RoutePosition;
+    [HideInInspector] public  int  RoutePosition;
     [HideInInspector] private bool isMoving;
-    [HideInInspector] public bool isPlayerOrderRolled;
+    [HideInInspector] public  bool isPlayerOrderRolled;
 
     [Header("Route")]
     [SerializeField] public NodesController CurrentRoute;
 
     [Header("MISC")]
     [HideInInspector] public WaitForSeconds TimeDelay = new WaitForSeconds(0.25f);
+    [HideInInspector] public int TempRoll;
 
     // Start is called before the first frame update
     void Start()
-    {        
-
+    {     
     }
     // Update is called once per frame
     void Update()
     {
-        if (Input.anyKeyDown && !isMoving)
+        PlayerHierarchy ThisPlayersTurn = GameController.GetCurrentTurn();
+        if (Input.GetKeyDown(KeyCode.X) && !isMoving && PlayerHier == ThisPlayersTurn)
         {
             switch (isPlayerOrderRolled) 
             {
@@ -47,43 +48,16 @@ public class PlayerMovement : MonoBehaviour
     }
     private void RollHeir()
     {
-        RouteSteps = Random.Range(1, (10 + 1));
-        StartCoroutine(DecideTurnOrder());
+        TempRoll = Random.Range(1, (10 + 1));
+        GameController.AddRollOrder(TempRoll);
+        Debug.Log(PlayerHier + " Rolled: " + TempRoll + " for roll order");
+        isPlayerOrderRolled = true;
     }
     private void Roll()
     {
         RouteSteps = Random.Range(1, (MaxSteps + 1));
-        Debug.Log("Rolled: " + RouteSteps);
+        Debug.Log(PlayerHier + " Rolled: " + RouteSteps);
         StartCoroutine(Move());        
-    }
-    IEnumerator DecideTurnOrder()
-    {
-        if (isPlayerOrderRolled)
-        {
-            yield break;
-        }
-        isPlayerOrderRolled = true;
-        if (CurrentRoute != null)
-        {
-            while (RouteSteps > 0)
-            {
-                RoutePosition++;
-                RoutePosition %= CurrentRoute.ChildNodeList.Count;
-
-                Vector3 NextNode = CurrentRoute.ChildNodeList[RoutePosition].position;
-                while (MoveToNextNode(NextNode))
-                {
-                    yield return null;
-                }
-                yield return TimeDelay;
-                RouteSteps--;
-            }
-        }
-        else
-        {
-            Debug.Log("No Route");
-        }
-        isMoving = false;
     }
     IEnumerator Move()
     {
