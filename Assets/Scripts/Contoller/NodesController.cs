@@ -5,7 +5,10 @@ using UnityEngine;
 public class NodesController : MonoBehaviour
 {
     [HideInInspector] public Transform[] ChildObjects;
+    [HideInInspector] public NodesType[] ChildObjectTypes;
     [SerializeField]  public List<Transform> ChildNodeList = new List<Transform>();
+    [SerializeField]  public List<int> ChildNodeIDList = new List<int>();
+    [SerializeField]  public List<NodeEventType> ChildNodeTypeList = new List<NodeEventType>();
     // Start is called before the first frame update
     void Start()
     {
@@ -26,14 +29,40 @@ public class NodesController : MonoBehaviour
     }
     private void FillNodes() 
     {
-        ChildNodeList.Clear();
+        ClearNodeList();
+
         ChildObjects = GetComponentsInChildren<Transform>();
-        foreach (Transform Child in ChildObjects) 
+        ChildObjectTypes = GetComponentsInChildren<NodesType>();
+
+        foreach (Transform Child in ChildObjects)
         {
             if (Child != this.transform)
             {
                 ChildNodeList.Add(Child);
             }
         }
+
+        foreach (NodesType Child in ChildObjectTypes)
+        {
+            if (Child != this.transform)
+            {
+                ChildNodeIDList.Add(Child.MyNodeID);
+                ChildNodeTypeList.Add(Child.MyNodeType);
+            }
+        }
+    }
+    private void ClearNodeList()
+    {
+        ChildNodeList.Clear();
+        ChildNodeIDList.Clear();
+        ChildNodeTypeList.Clear();
+    }
+    public enum NodeEventType
+    {
+        Green,
+        White,
+        Purple,
+        Aquamarine,
+        Red,
     }
 }

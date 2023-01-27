@@ -123,8 +123,8 @@ public class GameSetupStats : MonoBehaviour
     }
     public enum GameState
     {
-        Setup,
-        Rolling,
+        Instructions,
+        RollOrder,
         Playing,
         Paused,
         GameOver,

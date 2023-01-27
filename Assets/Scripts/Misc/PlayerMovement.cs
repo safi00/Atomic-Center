@@ -24,14 +24,21 @@ public class PlayerMovement : MonoBehaviour
     [Header("MISC")]
     [HideInInspector] public WaitForSeconds TimeDelay = new WaitForSeconds(0.25f);
     [HideInInspector] public int TempRoll;
+    [HideInInspector] private Animator anim;
+    [HideInInspector] private Coroutine LookCoroutine;
+    [SerializeField] public Transform TargetToLookAt;
+    [SerializeField] public float Speed = 2.5f;
 
     // Start is called before the first frame update
     void Start()
-    {     
+    {
+        anim = gameObject.GetComponentInChildren<Animator>();
     }
     // Update is called once per frame
     void Update()
     {
+        WalkingAnimation();
+        /*
         PlayerHierarchy ThisPlayersTurn = GameController.GetCurrentTurn();
         if (Input.GetKeyDown(KeyCode.X) && !isMoving && PlayerHier == ThisPlayersTurn)
         {
@@ -45,15 +52,16 @@ public class PlayerMovement : MonoBehaviour
                     break;
             }
         }
+        */
     }
-    private void RollHeir()
+    public void RollHeir()
     {
         TempRoll = Random.Range(1, (10 + 1));
         GameController.AddRollOrder(TempRoll);
         Debug.Log(PlayerHier + " Rolled: " + TempRoll + " for roll order");
         isPlayerOrderRolled = true;
     }
-    private void Roll()
+    public void Roll()
     {
         RouteSteps = Random.Range(1, (MaxSteps + 1));
         Debug.Log(PlayerHier + " Rolled: " + RouteSteps);
@@ -73,20 +81,61 @@ public class PlayerMovement : MonoBehaviour
                 RoutePosition++;
                 RoutePosition %= CurrentRoute.ChildNodeList.Count;
 
-                Vector3 NextNode = CurrentRoute.ChildNodeList[RoutePosition].position;
-                while (MoveToNextNode(NextNode))
+                Transform NextNodeTransform = CurrentRoute.ChildNodeList[RoutePosition].transform;
+                Debug.Log(RoutePosition);
+                TargetToLookAt = NextNodeTransform;
+                StartRotating();
+
+                while (MoveToNextNode(NextNodeTransform.position))
                 {
                     yield return null;
                 }
                 yield return TimeDelay;
                 RouteSteps--;
             }
+            
         }
         else
         {
             Debug.Log("No Route");
         }
         isMoving = false;
+    }
+    private void WalkingAnimation()
+    {
+        if (isMoving)
+        {
+            anim.SetInteger("AnimationPar", 1);
+        }
+        else
+        {
+            anim.SetInteger("AnimationPar", 0);
+        }
+    }
+    public void StartRotating()
+    {
+        if (LookCoroutine != null)
+        {
+            StopCoroutine(LookCoroutine);
+        }
+        LookCoroutine = StartCoroutine(LookAt());
+    }
+
+    private IEnumerator LookAt()
+    {
+        Quaternion lookRotation = Quaternion.LookRotation(TargetToLookAt.position - transform.position);
+
+        float time = 0;
+
+        Quaternion initialRotation = transform.rotation;
+        while (time < 1)
+        {
+            transform.rotation = Quaternion.Slerp(initialRotation, lookRotation, time);
+
+            time += Time.deltaTime * Speed;
+
+            yield return null;
+        }
     }
     private bool MoveToNextNode(Vector3 Destination) 
     {

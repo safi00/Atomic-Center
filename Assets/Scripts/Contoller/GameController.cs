@@ -5,21 +5,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static GameSetupStats;
+using static NodesController;
 using static PlayerMovement;
 
 public class GameController : MonoBehaviour
 {
     [Header("GameStat")]
+    [SerializeField] private int  CurrentTurnNumber = 0;
     [SerializeField] private int  TurnCapicity;
     [SerializeField] private int  PointCapicity;
 
     [Header("Core GameStats")]
     [SerializeField] private int  PlayerAmount;
-    [SerializeField] private bool InfiniteRounds;
-    [SerializeField] private bool InfiniteScore;
+    [HideInInspector] private bool InfiniteRounds;
+    [HideInInspector] private bool InfiniteScore;
     [SerializeField] public GameState CurrentState;
     [SerializeField] public NodesController CurrentRoute;
-    [SerializeField] public static List<PlayerHierarchy> RollOrder;
+    [SerializeField] public static List<GameObject> RollOrder;
 
     [Header("PlayersPrefabList")]
     [SerializeField] private GameObject[] PlayerPrefabs;
@@ -27,12 +29,14 @@ public class GameController : MonoBehaviour
     [SerializeField] private List<GameObject> Players = new List<GameObject>();
 
     [Header("UI")]
-    [SerializeField] private GameObject UIScores;
+    [SerializeField] private GameObject UIInfo;
     [SerializeField] private GameObject UIScore1;
     [SerializeField] private GameObject UIScore2;
     [SerializeField] private GameObject UIScore3;
     [SerializeField] private GameObject UIScore4;
     [SerializeField] private GameObject UIScore5;
+    [SerializeField] private GameObject UIRounds;
+    [SerializeField] private GameObject UIScoreCap;
     [HideInInspector] private List<GameObject> UIScoreLists = new List<GameObject>();
 
     [Header("GameStatsController")]
@@ -51,6 +55,7 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
     }
     private void Setup() 
     {
@@ -60,13 +65,17 @@ public class GameController : MonoBehaviour
         InfiniteRounds= GameSetupStats.GetTurnLimitBool();
         InfiniteScore = GameSetupStats.GetPointLimitBool();
 
-        SetGameState(GameState.Rolling);
+        UIRounds.transform.GetChild(0).transform.GetComponent<Text>().text = "Round: " + String.Format("{0:00}", CurrentTurnNumber) + "/" + String.Format("{0:00}", PointCapicity);
+        UIScoreCap.transform.GetChild(0).transform.GetComponent<Text>().text = String.Format("{0:00}", TurnCapicity);
+
+        SetGameState(GameState.Instructions);
         SetupUIList();
-        SetupBaseRollOrder();
         MakePlayers(PlayerAmount);
     }
-    private void MakePlayers(int amount) 
+    private void MakePlayers(int amount)
     {
+        MakePlayerHeirList();
+        RollOrder = new List<GameObject>() {};
         for (int i = 0; i < amount; i++)
         {
             GameObject Player = Instantiate(PlayerPrefabs[i], PlayerPostion(i), PlayerPrefabs[i].transform.rotation);
@@ -79,6 +88,8 @@ public class GameController : MonoBehaviour
 
             Players.Add(Player);
             Player.transform.parent = PlayersParentObject.transform;
+
+            RollOrder.Add(Player);
             SetupScores(PlayerAmount); 
             UpdateScores();
         }
@@ -129,11 +140,24 @@ public class GameController : MonoBehaviour
         }
         return ReturnPos;
     }
+    public void PlayerRoll()
+    {
+        PlayerMovement Player = GetCurrentTurnPlayer().GetComponent<PlayerMovement>();
+        switch (Player.isPlayerOrderRolled)
+        {
+            case true:
+                Player.Roll();
+                break;
+            case false:
+                Player.RollHeir();
+                break;
+        }
+    }
     private void UpdateScores()
     {
         for (int i = 0; i < PlayerAmount; i++)
         {
-            UIScoreLists[i].transform.GetChild(0).transform.GetComponent<Text>().text = "" + String.Format("{0:0000}", GameSetupStats.GetPlayerList()[i].playerscore);
+            UIScoreLists[i].transform.GetChild(0).transform.GetComponent<Text>().text = "" + String.Format("{0:00}", GameSetupStats.GetPlayerList()[i].playerscore);
         }
     }
     private void SetupScores(int PlayerAmount)
@@ -174,21 +198,6 @@ public class GameController : MonoBehaviour
             PlayerHierarchy.Player5,
         };
     }
-    private void SetupBaseRollOrder()
-    {
-        MakePlayerHeirList();
-        RollOrder = new List<PlayerHierarchy>() {
-            PlayerHierarchy.Player1,
-        };
-        if (PlayerAmount > 1 && PlayerAmount < 6)
-        {
-            for (int i = 1; i < PlayerAmount; i++)
-            {
-                RollOrder.Add(PlayerHierarchies[i]);
-                Debug.Log(RollOrder.Count);
-            }
-        }
-    }
     public void SortRollOrderList()
     {
         for (int i = 0; i < PlayerAmount - 1; i++)
@@ -199,7 +208,7 @@ public class GameController : MonoBehaviour
                 RollOrderRolls[i] = RollOrderRolls[i + 1];
                 RollOrderRolls[i + 1] = Temp1;
 
-                PlayerHierarchy Temp2 = RollOrder[i];
+                GameObject Temp2 = RollOrder[i];
                 RollOrder[i] = RollOrder[i + 1];
                 RollOrder[i + 1] = Temp2;
 
@@ -211,9 +220,13 @@ public class GameController : MonoBehaviour
     {
         RollOrderRolls.Add(Roll);
     }
-    public static PlayerHierarchy GetCurrentTurn()
+    public static GameObject GetCurrentTurnPlayer()
     {
         return RollOrder[IndexRoll];
+    }
+    public static int GetCurrentTurn()
+    {
+        return (IndexRoll + 1);
     }
     public static void NextTurn()
     {
@@ -226,6 +239,27 @@ public class GameController : MonoBehaviour
             IndexRoll++;
         }
         Debug.Log("Player " + (IndexRoll + 1) + " Turn");
+    }
+    private void EventTypeTrigger(NodeEventType eventType)
+    {
+        switch (eventType)
+        {
+            case NodeEventType.Green:
+
+                break;
+            case NodeEventType.White:
+
+                break;
+            case NodeEventType.Purple:
+
+                break;
+            case NodeEventType.Aquamarine:
+
+                break;
+            case NodeEventType.Red:
+
+                break;
+        }
     }
     public static void CheckTurnLimit()
     {

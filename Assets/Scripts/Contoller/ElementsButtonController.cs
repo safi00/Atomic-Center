@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class ElementsButtonController : MonoBehaviour
 {
-    [HideInInspector]
-    public int MyElementNum;
+    [HideInInspector] public int MyElementNum;
     public void GetMyElementNum() 
     { 
         HintsController.MyChosenElement = MyElementNum;
