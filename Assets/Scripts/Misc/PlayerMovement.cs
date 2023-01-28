@@ -1,12 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GameSetupStats;
 
 public class PlayerMovement : MonoBehaviour
 {
     [Header("PlayerStats")]
     [SerializeField] public PlayerHierarchy PlayerHier;
     [SerializeField] public string PlayerName;
+    [SerializeField] public int PlayerScore;
+    [SerializeField] public int PlayerLocation;
+    [SerializeField] public List<Debuff> PlayerDebuffList;
+    [SerializeField] public List<PowerUP> PlayerPowerUPList;
 
     [Header("MovementStats")]
     [SerializeField] private int   MaxSteps;
@@ -24,35 +29,22 @@ public class PlayerMovement : MonoBehaviour
     [Header("MISC")]
     [HideInInspector] public WaitForSeconds TimeDelay = new WaitForSeconds(0.25f);
     [HideInInspector] public int TempRoll;
-    [HideInInspector] private Animator anim;
+    [HideInInspector] private Animator Anim;
     [HideInInspector] private Coroutine LookCoroutine;
     [SerializeField] public Transform TargetToLookAt;
-    [SerializeField] public float Speed = 2.5f;
+    [SerializeField] public float Speed = 3.5f;
+    [SerializeField] public bool ongoingPrompt;
+    [SerializeField] public IEvent PassGO;
 
     // Start is called before the first frame update
     void Start()
     {
-        anim = gameObject.GetComponentInChildren<Animator>();
+        Anim = gameObject.GetComponentInChildren<Animator>();
     }
     // Update is called once per frame
     void Update()
     {
         WalkingAnimation();
-        /*
-        PlayerHierarchy ThisPlayersTurn = GameController.GetCurrentTurn();
-        if (Input.GetKeyDown(KeyCode.X) && !isMoving && PlayerHier == ThisPlayersTurn)
-        {
-            switch (isPlayerOrderRolled) 
-            {
-                case true:
-                    Roll();
-                    break;
-                case false:
-                    RollHeir();
-                    break;
-            }
-        }
-        */
     }
     public void RollHeir()
     {
@@ -82,9 +74,9 @@ public class PlayerMovement : MonoBehaviour
                 RoutePosition %= CurrentRoute.ChildNodeList.Count;
 
                 Transform NextNodeTransform = CurrentRoute.ChildNodeList[RoutePosition].transform;
-                Debug.Log(RoutePosition);
                 TargetToLookAt = NextNodeTransform;
-                StartRotating();
+
+                CheckIfPassedStart();
 
                 while (MoveToNextNode(NextNodeTransform.position))
                 {
@@ -93,7 +85,7 @@ public class PlayerMovement : MonoBehaviour
                 yield return TimeDelay;
                 RouteSteps--;
             }
-            
+            PlayerLocation = RoutePosition;
         }
         else
         {
@@ -101,15 +93,22 @@ public class PlayerMovement : MonoBehaviour
         }
         isMoving = false;
     }
+    private void CheckIfPassedStart()
+    {
+        if (RoutePosition == 0)
+        {
+            PointUPEvent();
+        }
+    }
     private void WalkingAnimation()
     {
         if (isMoving)
         {
-            anim.SetInteger("AnimationPar", 1);
+            Anim.SetInteger("AnimationPar", 1);
         }
         else
         {
-            anim.SetInteger("AnimationPar", 0);
+            Anim.SetInteger("AnimationPar", 0);
         }
     }
     public void StartRotating()
@@ -120,7 +119,6 @@ public class PlayerMovement : MonoBehaviour
         }
         LookCoroutine = StartCoroutine(LookAt());
     }
-
     private IEnumerator LookAt()
     {
         Quaternion lookRotation = Quaternion.LookRotation(TargetToLookAt.position - transform.position);
@@ -137,13 +135,21 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
         }
     }
-    private bool MoveToNextNode(Vector3 Destination) 
+    private bool MoveToNextNode(Vector3 Destination)
     {
+        StartRotating();
         return Destination != (transform.position = Vector3.MoveTowards(transform.position, Destination, MovementSpeed * Time.deltaTime));
     }
     public void SetPlayerHierarchy(PlayerHierarchy PHeir) 
     {
         PlayerHier = PHeir;
+    }
+    private void PointUPEvent()
+    {
+        if (PassGO != null)
+        {
+            PassGO.playEvent("PointUP");
+        }
     }
     public enum PlayerHierarchy
     {

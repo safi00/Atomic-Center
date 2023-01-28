@@ -15,15 +15,8 @@ public class HintsController : MonoBehaviour
     [SerializeField] public GameObject DisplayQuestionUI;
     [SerializeField] public GameObject DisplayPowerUpUI;
 
-    [Header("Questions")]
-    [SerializeField] public TMP_Text QuestionText;
-    [SerializeField] public TMP_Text AnswerA;
-    [SerializeField] public TMP_Text AnswerB;
-    [SerializeField] public TMP_Text AnswerC;
-    [SerializeField] public TMP_Text AnswerD;
-
     [Header("cached quesyion")]
-    [SerializeField] public Question currentQuestion;
+    [SerializeField] public Element currentQuestion;
     [SerializeField] public int questionIndex;
 
     [Header("Misc")]
@@ -37,7 +30,7 @@ public class HintsController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        DebuggingCode(getQuestionList());
+        DebuggingCode(getHintsList());
     }
     // Update is called once per frame
     void Update()
@@ -45,14 +38,6 @@ public class HintsController : MonoBehaviour
         if (MyChosenElement != null) 
         {
             Debug.Log(MyChosenElement);
-        }
-        if (wrongAnswer)
-        {
-            if (Input.anyKeyDown)
-            {
-                closeQuestionUI();
-                wrongAnswer = !wrongAnswer;
-            }
         }
     }
     private void DebuggingCode(List<Data> Data) 
@@ -102,85 +87,19 @@ public class HintsController : MonoBehaviour
     private bool checkAnswers(string playerAnswer)
     {
         bool answer = false;
+        /*
         if (currentQuestion.answer == playerAnswer)
         {
             answer = true;
         }
+        */
         return answer;
     }
-    private List<Data> getQuestionList()
+    private List<Data> getHintsList()
     {
         string jsontxt = File.ReadAllText(Application.dataPath + "/Resources/Hints.json");
         List<Data> questionList = JsonConvert.DeserializeObject<List<Data>>(jsontxt);
         return questionList;
-    }
-
-    /// <summary>
-    /// These methods checks runs the check method, i made 4 different ones for clarity
-    /// </summary>
-    public void AnswerAButton()
-    {
-        if (!questionIsAnswered)
-        {
-            if (checkAnswers(AnswerA.text))
-            {
-                DisplayQuestionUI.SetActive(false);
-                DisplayPowerUpUI.SetActive(true);
-            }
-            else
-            {
-                WrongAnswer(); 
-            }
-        }
-        questionIsAnswered = true;
-    }
-    public void AnswerBButton()
-    {
-        if (!questionIsAnswered)
-        {
-            if (checkAnswers(AnswerB.text))
-            {
-                DisplayQuestionUI.SetActive(false);
-                DisplayPowerUpUI.SetActive(true);
-            }
-            else
-            {
-                WrongAnswer();
-            }
-        }
-        questionIsAnswered = true;
-    }
-    public void AnswerCButton()
-    {
-        if (!questionIsAnswered)
-        {
-            if (checkAnswers(AnswerC.text))
-            {
-                DisplayQuestionUI.SetActive(false);
-                DisplayPowerUpUI.SetActive(true);
-            }
-            else
-            {
-                WrongAnswer();
-            }
-        }
-        questionIsAnswered = true;
-    }
-    public void AnswerDButton()
-    {
-        if (!questionIsAnswered)
-        {
-            if (checkAnswers(AnswerD.text))
-            {
-                DisplayQuestionUI.SetActive(false);
-                DisplayPowerUpUI.SetActive(true);
-            }
-            else
-            {
-                WrongAnswer();
-            }
-        }
-        questionIsAnswered = true;
     }
     /// <summary>
     /// This method get called whenever the Question Coin is triggered, it fills in the questions and answers and stops time
@@ -197,10 +116,12 @@ public class HintsController : MonoBehaviour
     public void WrongAnswer() 
     {
         wrongAnswerPanel.SetActive(true);
+        /*
         AnswerA.text = currentQuestion.answer;
         AnswerB.text = "you got the answer wrong";
         AnswerC.text = "you lose a heart";
         AnswerD.text = "press any key to continue";
+        */
         wrongAnswer = true;
     }
     public void closeQuestionUI()
@@ -209,16 +130,6 @@ public class HintsController : MonoBehaviour
         DisplayQuestionUI.SetActive(false);
         DisplayPowerUpUI.SetActive(false);
         ResumeGame();
-
-        hurtPlayer();
-    }
-    private void hurtPlayer()
-    {
-        IEvent events = hurtScript.GetComponent<IEvent>();
-        if (events != null)
-        {
-            events.playEvent("HURT");
-        }
     }
     public void closePowerUpUI()
     {
@@ -234,32 +145,6 @@ public class HintsController : MonoBehaviour
     {
         GameIsinQuestion = false;
         Time.timeScale = 1f;
-    }
-    /// <summary>
-    /// This methods are here to subcribe to events
-    /// so when a Qcoin gets collected all the other scripts know to tun a method
-    /// </summary>
-    private void OnEnable()
-    {
-        //PowerUPController.OnQCoinsCollectable += QuetionPOP;
-        Speed.OnSpeedGained += closePowerUpUI;
-        Points.OnPointsGained += closePowerUpUI;
-        Heart.OnHeartGained += closePowerUpUI;
-    }
-    private void OnDisable()
-    {
-        //PowerUPController.OnQCoinsCollectable -= QuetionPOP;
-        Speed.OnSpeedGained -= closePowerUpUI;
-        Points.OnPointsGained -= closePowerUpUI;
-        Heart.OnHeartGained -= closePowerUpUI;
-    }
-    public class Question
-    {
-        public int questionid { get; set; }
-        public string answertype { get; set; }
-        public string question { get; set; }
-        public string answer { get; set; }
-        public List<string> falseAnswers { get; set; }
     }
     //Variable names should awlays match the json and its case senstive
     [System.Serializable]
