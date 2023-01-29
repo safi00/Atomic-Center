@@ -7,6 +7,7 @@
         "elementid": 0,
         "elementname": "Waterstoff",
         "elementcode": "H",
+        "elementnnumber": 1,
         "elementhints": [
           "Het hoort tot de groep niet-metalen, het is meestal gasvormig. Het is de meest voorkomende element in de helaal.",
           "Het hoort tot geen enkele groep (metalen, niet-metalen en semi-metalen).",
@@ -17,6 +18,7 @@
         "elementid": 1,
         "elementname": "Potassium",
         "elementcode": "K",
+        "elementnnumber": 29,
         "elementhints": [
           "Het is een metaal en in het Overgangsmetaal groep, het is meestal vast, met een smeltpunt van 1084 °C.",
           "Het is een buigzaam metaal en eenvoudig te vervormen, wordt gebruikt in het maken van draden, muntgeld en videokaarten.",
@@ -33,6 +35,7 @@
         "elementid": 0,
         "elementname": "Waterstoff",
         "elementcode": "H",
+        "elementnnumber": 1,
         "elementhints": [
           "Het hoort tot de groep niet-metalen, het is meestal gasvormig. Het is de meest voorkomende element in de helaal.",
           "Het hoort tot geen enkele groep (metalen, niet-metalen en semi-metalen).",
@@ -43,6 +46,7 @@
         "elementid": 1,
         "elementname": "Potassium",
         "elementcode": "K",
+        "elementnnumber": 29,
         "elementhints": [
           "Het is een metaal en in het Overgangsmetaal groep, het is meestal vast, met een smeltpunt van 1084 °C.",
           "Het is een buigzaam metaal en eenvoudig te vervormen, wordt gebruikt in het maken van draden, muntgeld en videokaarten.",
@@ -53,6 +57,7 @@
         "elementid": 29,
         "elementname": "Zink",
         "elementcode": "Zn",
+        "elementnnumber": 30,
         "elementhints": [
           "Het is een metaal en in het Overgangsmetaal groep, het is meestal vast, met een smeltpunt van 420 °C.",
           "Het is momenteel het 4e meest geconsumeerde metaal ter wereld, na ijzer, aluminium en koper. het is een natuurlijk bestanddeel van de aarde en inherent aan onze omgeving.",

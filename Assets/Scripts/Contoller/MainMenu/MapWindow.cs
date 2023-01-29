@@ -25,6 +25,10 @@ public class MapWindow : MonoBehaviour
     [SerializeField] private GameObject Map1Button;
     [SerializeField] private GameObject Map2Button;
 
+    [Header("Map buttons")]
+    [SerializeField] private GameObject Diff1Button;
+    [SerializeField] private GameObject Diff2Button;
+
     [Header("Buttons")]
     [SerializeField] private GameObject StartButton;
 
@@ -35,6 +39,8 @@ public class MapWindow : MonoBehaviour
     [SerializeField] public static bool isThereAnythingWrittenInput3;
     [SerializeField] public static bool isThereAnythingWrittenInput4;
     [SerializeField] public static bool isThereAnythingWrittenInput5;
+    [SerializeField] public static bool isStartButtonReady1;
+    [SerializeField] public static bool isStartButtonReady2;
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +54,7 @@ public class MapWindow : MonoBehaviour
     void Update()
     {
         TextCheck();
+        UpdateStartButton();
     }
     private void Setup()
     {
@@ -74,12 +81,37 @@ public class MapWindow : MonoBehaviour
     public void SelectMap1()
     {
         GameSetupStats.SetMap(1);
-        StartButton.GetComponent<Button>().interactable = true;
+        isStartButtonReady1 = true;
+        Map1Button.GetComponent<Button>().interactable = false;
+        //Map2Button.GetComponent<Button>().interactable = true;
     }
     public void SelectMap2()
     {
         GameSetupStats.SetMap(2);
-        StartButton.GetComponent<Button>().interactable = true;
+        isStartButtonReady1 = true;
+        Map1Button.GetComponent<Button>().interactable = true;
+        //Map2Button.GetComponent<Button>().interactable = false;
+    }
+    public void SelectDif1()
+    {
+        GameSetupStats.SetDifficulty(1);
+        isStartButtonReady2 = true;
+        Diff1Button.GetComponent<Button>().interactable = false;
+        Diff2Button.GetComponent<Button>().interactable = true;
+    }
+    public void SelectDif2()
+    {
+        GameSetupStats.SetDifficulty(2);
+        isStartButtonReady2 = true;
+        Diff1Button.GetComponent<Button>().interactable = true;
+        Diff2Button.GetComponent<Button>().interactable = false;
+    }
+    public void UpdateStartButton()
+    {
+        if (isStartButtonReady1 && isStartButtonReady2)
+        {
+            StartButton.GetComponent<Button>().interactable = true;
+        }
     }
     private void ActivateFields(int Amount) 
     {
@@ -217,7 +249,7 @@ public class MapWindow : MonoBehaviour
     }
     public void StartGame()
     {
-        GameSetupStats.SetGameState(GameState.Playing);
+        GameSetupStats.SetGameState(GameState.RollOrder);
         GameSetupStats.SetplayerList(SavePlayers());
         Loader.Load(ConvertMapToScene());
     }

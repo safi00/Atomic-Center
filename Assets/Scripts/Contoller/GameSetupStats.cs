@@ -12,6 +12,7 @@ public class GameSetupStats : MonoBehaviour
     [SerializeField] public static bool isTurnNoLimit;
     [SerializeField] public static bool isPointNoLimit;
     [SerializeField] public static Map SelectedMap;
+    [SerializeField] public static Difficulty GameDifficulty;
     [SerializeField] public static GameState CurrentGameState;
 
     [Header("Player Stats")]
@@ -61,6 +62,18 @@ public class GameSetupStats : MonoBehaviour
                 break;
         }
     }
+    public static void SetDifficulty(int Diff)
+    {
+        switch (Diff)
+        {
+            case 1:
+                GameDifficulty = Difficulty.Easy;
+                break;
+            case 2:
+                GameDifficulty = Difficulty.Hard;
+                break;
+        }
+    }
     public static void NoTurnLimitSwitch()
     {
         isTurnNoLimit = !isTurnNoLimit;
@@ -88,6 +101,10 @@ public class GameSetupStats : MonoBehaviour
     public static Map GetSelectedMap()
     {
         return SelectedMap;
+    }
+    public static Difficulty GetSelectedGameDifficulty()
+    {
+        return GameDifficulty;
     }
     public static int GetCurrentTurnNumber()
     {
@@ -121,8 +138,14 @@ public class GameSetupStats : MonoBehaviour
         PointLimit = 0;
         SelectedMap = 0;
     }
+    public enum Difficulty
+    {
+        Easy,
+        Hard,        
+    }
     public enum GameState
     {
+        Setup,
         Instructions,
         RollOrder,
         Playing,

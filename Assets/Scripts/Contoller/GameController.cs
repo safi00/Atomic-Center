@@ -1,14 +1,11 @@
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static GameSetupStats;
 using static NodesController;
 using static PlayerMovement;
-
+using static UnityEditor.ShaderData;
 public class GameController : MonoBehaviour
 {
     [Header("GameStat")]
@@ -23,6 +20,7 @@ public class GameController : MonoBehaviour
     [SerializeField] public GameState CurrentState;
     [SerializeField] public NodesController CurrentRoute;
     [SerializeField] public static List<GameObject> RollOrder;
+    [SerializeField] private Difficulty GameDifficulty;
 
     [Header("PlayersPrefabList")]
     [SerializeField] private GameObject[] PlayerPrefabs;
@@ -30,6 +28,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private List<GameObject> PlayersList = new List<GameObject>();
 
     [Header("UI")]
+    [SerializeField] private Text UIGameInfo;
     [SerializeField] private GameObject UIVisuals;
     [SerializeField] private GameObject UIInfo;
     [SerializeField] private GameObject UIScore1;
@@ -39,32 +38,44 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject UIScore5;
     [SerializeField] private GameObject UIRounds;
     [SerializeField] private GameObject UIScoreCap;
-    [HideInInspector] private List<GameObject> UIScoreLists = new List<GameObject>();
+    [SerializeField] private List<GameObject> UIScoreLists = new List<GameObject>();
 
     [SerializeField] private GameObject UIBigRollButton;
     [SerializeField] private GameObject UIStayOptions;
 
+    [SerializeField] private GameObject UIStatScreen;
     [SerializeField] private Text FirstPlace;
     [SerializeField] private Text SecondPlace;
     [SerializeField] private Text ThirdPlace;
     [SerializeField] private Text FourthPlace;
     [SerializeField] private Text FifthPlace;
 
+    [SerializeField] private GameObject PlayerTurnUI;
     [SerializeField] private GameObject PlayerTurnText;
+    [SerializeField] private GameObject PlayerTurnClickText;
     [SerializeField] private GameObject PlayerTurnButton;
 
     [Header("GameStatsController")]
     [SerializeField] public GameSetupStats GameStats;
 
+    [Header("HintsController")]
+    [SerializeField] public HintsController ElementHintsController;
+
     [Header("Events")]
-    [SerializeField] public GameObject PassGOEvent;
+    [SerializeField] public GameObject PointUPEvent;
+    [SerializeField] public GameObject ResetDataEvent;
+    [SerializeField] public GameObject LogEvent;
+    [SerializeField] public GameObject EventTriggerEvent;
+    [SerializeField] public GameObject EndTurnEvent;
+    [HideInInspector] public static string LogString;
 
     [Header("Misc")]
     [SerializeField] private List<PlayerHierarchy> PlayerHierarchies;
+    [HideInInspector] private bool isLogtextUpdated;
     [HideInInspector] private static List<int> RollOrderRolls = new List<int>();
     [HideInInspector] private static int IndexRoll = 0;
-    [HideInInspector] private static bool isBigRollButtonVisable;
     [HideInInspector] private static bool isRollOrderDone = false;
+    [HideInInspector] public static NodeEventType NodeEventType;
 
     // Start is called before the first frame update
     void Start()
@@ -74,20 +85,30 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
     }
     private void Setup() 
     {
-        isBigRollButtonVisable = true;
         TurnCapicity  = GameSetupStats.GetTurnLimit();
         PointCapicity = GameSetupStats.GetPointLimit();
         PlayerAmount  = GameSetupStats.GetPlayerAmount();
         InfiniteRounds= GameSetupStats.GetTurnLimitBool();
         InfiniteScore = GameSetupStats.GetPointLimitBool();
+        GameDifficulty= GameSetupStats.GetSelectedGameDifficulty();
+        ElementHintsController.ChosenDiffuculty = GameDifficulty;
 
-        UIRounds.transform.GetChild(0).transform.GetComponent<Text>().text = "Round: " + String.Format("{0:00}", CurrentTurnNumber) + "/" + String.Format("{0:00}", PointCapicity);
+        LogString = "Roll for Turn Order";
+        switch (InfiniteRounds)
+        {
+            case  true:
+                UIRounds.transform.GetChild(0).transform.GetComponent<Text>().text = "Round: " + String.Format("{0:00}", CurrentTurnNumber);
+                break;
+            case false:
+                UIRounds.transform.GetChild(0).transform.GetComponent<Text>().text = "Round: " + String.Format("{0:00}", CurrentTurnNumber) + "/" + String.Format("{0:00}", PointCapicity);
+                break;
+        }
         UIScoreCap.transform.GetChild(0).transform.GetComponent<Text>().text = String.Format("{0:00}", TurnCapicity);
 
+        UpdateGameInfoLog();
         SetGameState(GameState.Instructions);
         SetupUIList();
         MakePlayers(PlayerAmount);
@@ -108,8 +129,11 @@ public class GameController : MonoBehaviour
             PlayerScript.PlayerName = GameSetupStats.GetPlayerList()[i].playername;
             PlayerScript.PlayerScore = GameSetupStats.GetPlayerList()[i].playerscore;
             PlayerScript.PlayerLocation = GameSetupStats.GetPlayerList()[i].playerlocation;
-            PlayerScript.ongoingPrompt = false;
-            PlayerScript.PassGO = PassGOEvent.GetComponent<IEvent>();
+            PlayerScript.CurrentElementIndex = -1;
+
+            PlayerScript.PassGO = PointUPEvent.GetComponent<IEvent>();
+            PlayerScript.Log = LogEvent.GetComponent<IEvent>();
+            PlayerScript.Trigger = EventTriggerEvent.GetComponent<IEvent>();
 
             InitilizingPlayerDataLists(PlayerScript, GameSetupStats.GetPlayerList()[i].debuffs, GameSetupStats.GetPlayerList()[i].powerups);
 
@@ -203,15 +227,24 @@ public class GameController : MonoBehaviour
                 break;
         }
     }
+    public void PlayerStay()
+    {
+        PlayerMovement Player = GetCurrentTurnPlayerObject().GetComponent<PlayerMovement>();
+        Player.Stay();
+    }
+    private void UpdateGameInfoLog()
+    {
+        UIGameInfo.text = LogString;
+        if (isRollOrderDone)
+        {
+            UpdateScores();
+        }
+    }
     private void UpdateScores()
     {
         for (int i = 0; i < PlayerAmount; i++)
         {
             UIScoreLists[i].transform.GetChild(0).transform.GetComponent<Text>().text = "" + String.Format("{0:00}", GetPlayerScript(i).PlayerScore);
-        }
-        if (true)
-        {
-
         }
     }
     private void SetupScores(int PlayerAmount)
@@ -254,7 +287,7 @@ public class GameController : MonoBehaviour
     }
     public void SortRollOrderList()
     {
-        for (int i = 0; i < PlayerAmount - 1; i++)
+        for (int i = 0; i < (PlayerAmount - 1); i++)
         {
             if (RollOrderRolls[i] < RollOrderRolls[i + 1])
             {
@@ -282,6 +315,10 @@ public class GameController : MonoBehaviour
     {
         return GetCurrentTurnPlayerObject().GetComponent<PlayerMovement>();
     }
+    public static string GetCurrentTurnPlayerName()
+    {
+        return GetCurrentTurnPlayerObject().GetComponent<PlayerMovement>().PlayerName;
+    }
     private PlayerMovement GetPlayerScript(int PlayerNumber)
     {
         return PlayersList[PlayerNumber].GetComponent<PlayerMovement>();
@@ -292,6 +329,11 @@ public class GameController : MonoBehaviour
     }
     public void NextTurn()
     {
+        if (!isRollOrderDone)
+        {
+            CheckIfRollOrderIsFinished();
+            CurrentTurnNumber = 1;
+        }
         if (IndexRoll >= (RollOrder.Count - 1))
         {
             IndexRoll = 0;
@@ -302,31 +344,33 @@ public class GameController : MonoBehaviour
         }
         if (isRollOrderDone)
         {
+            UpdateRollButtons();
             TurnOnVisuals();
-            PlayerTurnText.SetActive(true);
-            PlayerTurnText.transform.GetComponent<Text>().text = "Player " + (IndexRoll + 1) + "'s Turn";
-            PlayerTurnButton.SetActive(true);
+            TurnOnTurnUI();
+        }
+    }
+    private void CheckIfRollOrderIsFinished()
+    {
+        if (RollOrderRolls.Count == PlayerAmount)
+        {
+            isRollOrderDone = true;
+            SortRollOrderList();
         }
     }
     private void UpdateRollButtons()
     {
-        if (GetCurrentTurnPlayerScript().ongoingPrompt)
+        if (GetCurrentTurnPlayerScript().CurrentElementIndex > -1)
         {
-            if (isBigRollButtonVisable)
-            {
-                FlipTheRollButton();
-            }
+            TurnOnStayButton();
         }
         else
         {
-            if (!isBigRollButtonVisable)
-            {
-                FlipTheRollButton();
-            }
+            TurnOnBigRollButton();
         }
     }
-    private void EventTypeTrigger(NodeEventType eventType)
+    public void EventTypeTrigger()
     {
+        NodeEventType eventType = NodeEventType;
         switch (eventType)
         {
             case NodeEventType.Green:
@@ -348,11 +392,12 @@ public class GameController : MonoBehaviour
     }
     private void TriggerGreenNodeEvent()
     {
-
+        ElementHintsController.CurrentGuessingPlayer = GetCurrentTurnPlayerScript();
     }
     private void TriggerWhiteNodeEvent()
     {
-
+        ElementHintsController.CurrentGuessingPlayer = GetCurrentTurnPlayerScript();
+        ElementHintsController.HintPOP();
     }
     private void TriggerPurpleNodeEvent()
     {
@@ -366,19 +411,15 @@ public class GameController : MonoBehaviour
     {
 
     }
-    private void FlipTheRollButton()
+    private void TurnOnStayButton()
     {
-        isBigRollButtonVisable = !isBigRollButtonVisable;
-        if (isBigRollButtonVisable)
-        {
-            UIBigRollButton.SetActive(true);
-            UIStayOptions.SetActive(false);
-        }
-        else
-        {
-            UIBigRollButton.SetActive(false);
-            UIStayOptions.SetActive(true);
-        }
+        UIStayOptions.SetActive(true);
+        UIBigRollButton.SetActive(false);
+    }
+    private void TurnOnBigRollButton()
+    {
+        UIStayOptions.SetActive(false);
+        UIBigRollButton.SetActive(true);
     }
     private void FillInStats()
     {
@@ -392,7 +433,7 @@ public class GameController : MonoBehaviour
             PlayerNameRanking.Add(GetPlayerScript(i).PlayerName);
             PlayerScoreRanking.Add(GetPlayerScript(i).PlayerScore);
         }
-        for (int i = 0; i < PlayerAmount - 1; i++)
+        for (int i = 0; i < PlayerAmount; i++)
         {
             if (GetPlayerScript(i).PlayerScore < GetPlayerScript(i + 1).PlayerScore)
             {
@@ -448,13 +489,33 @@ public class GameController : MonoBehaviour
             }
         }
     }
+    private void TurnOnStatStatScreenUI()
+    {
+        UIStatScreen.SetActive(true);
+    }
+    private void TurnOffStatScreenUI()
+    {
+        UIStatScreen.SetActive(false);
+    }
+    public void DebugTest()
+    {
+    }
     public void TurnOnVisuals()
     {
         UIVisuals.SetActive(true);
     }
+    public void TurnOnTurnUI()
+    {
+        PlayerTurnText.SetActive(true);
+        PlayerTurnText.transform.GetComponent<Text>().text = GetCurrentTurnPlayerName() + "'s Turn";
+        PlayerTurnButton.SetActive(true);
+        PlayerTurnUI.SetActive(true);
+    }
     public void TurnOffVisuals()
     {
         UIVisuals.SetActive(false);
+
+        PlayerTurnUI.SetActive(false);
         PlayerTurnText.SetActive(false);
         PlayerTurnButton.SetActive(false);
     }
@@ -463,16 +524,49 @@ public class GameController : MonoBehaviour
         GetCurrentTurnPlayerScript().PlayerScore++;
         UpdateScores();
     }
+    private void ResetData()
+    {
+        GameSetupStats.SetGameState(GameState.Setup);
+        for (int i = 0; i < PlayerAmount; i++)
+        {
+
+        }
+    }
+    private void ResetEvent()
+    {
+        IEvent resetEvent = ResetDataEvent.GetComponent<IEvent>();
+        if (resetEvent != null)
+        {
+            resetEvent.playEvent("Reset");
+        }
+    }
+    public void ReturnToMainMenu()
+    {
+        ResetEvent();
+        Loader.Load(Loader.Scene.MainMenu);
+    }
+    public void ExitAplication()
+    {
+        Application.Quit();
+    }
     /// <summary>
     /// This methods are here to subcribe to events
     /// so when a Qcoin gets collected all the other scripts know to tun a method
     /// </summary>
     private void OnEnable()
     {
+        EndTurn.OnTurnEnd += NextTurn;
+        TriggerEvent.OnEventTriggered += EventTypeTrigger;
+        Log.OnLog += UpdateGameInfoLog;
+        Reset.OnReset += ResetData;
         PointUP.OnPointUP += PlayerPointUP;
     }
     private void OnDisable()
     {
+        EndTurn.OnTurnEnd -= NextTurn;
+        TriggerEvent.OnEventTriggered -= EventTypeTrigger;
+        Log.OnLog -= UpdateGameInfoLog;
+        Reset.OnReset -= ResetData;
         PointUP.OnPointUP -= PlayerPointUP;
     }
 }

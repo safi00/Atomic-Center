@@ -13,8 +13,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public List<Debuff> PlayerDebuffList;
     [SerializeField] public List<PowerUP> PlayerPowerUPList;
 
+    [Header("Hint Stats")]
+    [SerializeField] public int CurrentElementIndex;
+    [SerializeField] public int AmountofHints;
+
     [Header("MovementStats")]
-    [SerializeField] private int   MaxSteps;
+    [SerializeField] private int MaxSteps;
     [SerializeField] private float MovementSpeed;
 
     [Header("Hidden MovementStats")]
@@ -26,6 +30,11 @@ public class PlayerMovement : MonoBehaviour
     [Header("Route")]
     [SerializeField] public NodesController CurrentRoute;
 
+    [Header("Events")]
+    [HideInInspector] public IEvent PassGO;
+    [HideInInspector] public IEvent Log;
+    [HideInInspector] public IEvent Trigger;
+
     [Header("MISC")]
     [HideInInspector] public WaitForSeconds TimeDelay = new WaitForSeconds(0.25f);
     [HideInInspector] public int TempRoll;
@@ -33,8 +42,6 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] private Coroutine LookCoroutine;
     [SerializeField] public Transform TargetToLookAt;
     [SerializeField] public float Speed = 3.5f;
-    [SerializeField] public bool ongoingPrompt;
-    [SerializeField] public IEvent PassGO;
 
     // Start is called before the first frame update
     void Start()
@@ -50,14 +57,29 @@ public class PlayerMovement : MonoBehaviour
     {
         TempRoll = Random.Range(1, (10 + 1));
         GameController.AddRollOrder(TempRoll);
-        Debug.Log(PlayerHier + " Rolled: " + TempRoll + " for roll order");
+        GameController.LogString = PlayerName + " Rolled: " + TempRoll + " for roll order";
+        LogEvent();
         isPlayerOrderRolled = true;
     }
     public void Roll()
     {
         RouteSteps = Random.Range(1, (MaxSteps + 1));
-        Debug.Log(PlayerHier + " Rolled: " + RouteSteps);
-        StartCoroutine(Move());        
+        GameController.LogString = PlayerName + " Rolled: " + RouteSteps;
+        LogEvent(); 
+
+        CurrentElementIndex = -1;
+        AmountofHints = 0;
+
+        StartCoroutine(Move());
+    }
+    public void Stay()
+    {
+        GameController.LogString = PlayerName + " Stayed";
+        LogEvent();
+
+        PlayerLocation = RoutePosition;
+        GameController.NodeEventType = CurrentRoute.ChildNodeTypeList[RoutePosition];
+        EventTriggerEvent();
     }
     IEnumerator Move()
     {
@@ -86,6 +108,8 @@ public class PlayerMovement : MonoBehaviour
                 RouteSteps--;
             }
             PlayerLocation = RoutePosition;
+            GameController.NodeEventType = CurrentRoute.ChildNodeTypeList[RoutePosition];
+            EventTriggerEvent();
         }
         else
         {
@@ -149,6 +173,20 @@ public class PlayerMovement : MonoBehaviour
         if (PassGO != null)
         {
             PassGO.playEvent("PointUP");
+        }
+    }
+    private void EventTriggerEvent()
+    {
+        if (Trigger != null)
+        {
+            Trigger.playEvent("EventTriggered");
+        }
+    }
+    private void LogEvent()
+    {
+        if (Log != null)
+        {
+            Log.playEvent("Log");
         }
     }
     public enum PlayerHierarchy

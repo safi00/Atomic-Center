@@ -1,74 +1,143 @@
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using TMPro;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
+using UnityEngine.UI;
+using static GameSetupStats;
 using Random = UnityEngine.Random;
 
 public class HintsController : MonoBehaviour
 {
     [Header("Big UIs")]
-    [SerializeField] public GameObject DisplayQuestionUI;
-    [SerializeField] public GameObject DisplayPowerUpUI;
+    [SerializeField] public GameObject VisualsUI;
+    [SerializeField] public GameObject GuessUI;
+    [SerializeField] public GameObject HintsUI;
+    [SerializeField] public GameObject PeriodicUI;
 
-    [Header("cached quesyion")]
-    [SerializeField] public Element currentQuestion;
-    [SerializeField] public int questionIndex;
+    [SerializeField] public Text Hint1;
+    [SerializeField] public Text Hint2;
+    [SerializeField] public Text Hint3;
+
+    [SerializeField] private GameObject EndUI;
+    [SerializeField] private GameObject EndText;
+    [SerializeField] private GameObject EndClickText;
+    [SerializeField] private GameObject EndButton;
+
+    [Header("cached Elementlist")]
+    [HideInInspector] public Data CachedData;
+    [HideInInspector] public string CachedDataDiffuculty;
+    [HideInInspector] public List<Element> CachedDataElementList;
+
+    [Header("Random Element")]
+    [SerializeField] public Element GuessElement;
+    [SerializeField] public List<string> GuessElementHintsList;
+
+    [Header("Setup Stats")]
+    [SerializeField] public Difficulty ChosenDiffuculty;
+
+    [Header("Player Stats")]
+    [SerializeField] public PlayerMovement CurrentGuessingPlayer;
+    [SerializeField] public static int ElementIndex;
+    [SerializeField] public static int AmountofHints;
+
+    [Header("Event")]
+    [SerializeField] public GameObject EndTurnEvent;
+    [SerializeField] public GameObject PointUPEvent;
 
     [Header("Misc")]
-    [SerializeField] public static bool GameIsinQuestion = false;
-    [SerializeField] public bool questionIsAnswered;
+    [SerializeField] public bool isElementGuessed;
     [SerializeField] public bool wrongAnswer;
-    [SerializeField] public GameObject hurtScript;
-    [SerializeField] public GameObject wrongAnswerPanel;
-    public static int? MyChosenElement;
+    [HideInInspector] public static int? MyChosenElement;
 
     // Start is called before the first frame update
     void Start()
     {
-        DebuggingCode(getHintsList());
+        Setup();
     }
     // Update is called once per frame
     void Update()
     {
-        if (MyChosenElement != null) 
+        if (MyChosenElement != null)
         {
             Debug.Log(MyChosenElement);
+            if (CheckAnswers(MyChosenElement))
+            {
+                GoodAnswer();
+            }
+            else
+            {
+                WrongAnswer();
+            }
+            MyChosenElement = null;
         }
     }
-    private void DebuggingCode(List<Data> Data) 
+    private void Setup()
     {
+        AddElementList(GetHintsList());
+        isElementGuessed = false;
+    }
+    /// <summary>
+    ///  This method prepares the answers and grabs a random index between 0,1 and 2 & 
+    /// adds it again and then change that specific indexso its always random and not the same button as the right answer.
+    /// </summary>
+    private List<Data> GetHintsList()
+    {
+        string jsontxt = File.ReadAllText(Application.dataPath + "/Resources/Hints.json");
+        List<Data> questionList = JsonConvert.DeserializeObject<List<Data>>(jsontxt);
+        return questionList;
+    }
+    /// <summary>
+    /// This method prepares the answers and grabs a random index between 0,1 and 2 & 
+    /// adds it again and then change that specific indexso its always random and not the same button as the right answer.
+    /// </summary>
+    private void AddElementList(List<Data> Datalist)
+    {
+        int DatalistAmount = Datalist.Count;
+        if (DatalistAmount > 0)
+        {
+            for (int i = 0; i < DatalistAmount; i++)
+            {
+                if (Datalist[i].Difficultytype == ChosenDiffucultyConverter(ChosenDiffuculty))
+                {
+                    CachedData = Datalist[i];
+                    CachedDataDiffuculty = CachedData.Difficultytype;
+                    CachedDataElementList = CachedData.Elementlist;
+                }
+            }
+        }
     }
     /// <summary>
     /// This method prepares the questions and answer and qaches the question.
     /// </summary>
-    /*
-    private void FillinQuestions()
+    private void FillInUI()
     {
-        List<Data> Questionlist = getQuestionList();
-        questionIndex = Random.Range(0,Questionlist.Count);
-        Data randomQuestion = Questionlist[questionIndex];
-        currentQuestion = randomQuestion;
-        QuestionText.text = randomQuestion.questionid + "# Question " + randomQuestion.questionid +": " + Environment.NewLine + randomQuestion.question;
-        List<string> randomAnswers = randomizeAnswers(randomQuestion.falseAnswers, randomQuestion.answer);
-        AnswerA.text = randomAnswers[0];
-        AnswerB.text = randomAnswers[1];
-        AnswerC.text = randomAnswers[2];
-        AnswerD.text = randomAnswers[3];
-        questionIsAnswered = false;
+        CurrentPlayerData();
+        if (ElementIndex <= -1)
+        {
+            ElementIndex = Random.Range(0, CachedDataElementList.Count);
+            Element RandomElement = CachedDataElementList[ElementIndex];
+            GuessElement = RandomElement;
+            CurrentGuessingPlayer.CurrentElementIndex = ElementIndex;
+        }
         wrongAnswer = false;
+        UpdateElements(ElementIndex);
     }
-    */
+
+    /// <summary>
+    /// This method prepares the questions and answer and qaches the question.
+    /// </summary>
+    private void CurrentPlayerData()
+    {
+        ElementIndex = CurrentGuessingPlayer.CurrentElementIndex;
+        AmountofHints= CurrentGuessingPlayer.AmountofHints;
+    }
 
     /// <summary>
     /// This method prepares the answers and grabs a random index between 0,1 and 2 & 
     /// adds it again and then change that specific indexso its always random and not the same button as the right answer.
     /// </summary>
-    private List<string> randomizeAnswers(List<string> falseAnswers, string rightAnswer)
+    private List<string> RandomizeAnswers(List<string> falseAnswers, string rightAnswer)
     {
         List<string> answers = new List<string>();
         int randomPlacement = Random.Range(0, 3);
@@ -84,75 +153,165 @@ public class HintsController : MonoBehaviour
     /// <summary>
     /// This method checks if the buttons answer was right
     /// </summary>
-    private bool checkAnswers(string playerAnswer)
+    private void UpdateElements(int LastElementIndex)
+    {
+        Element RandomElement = CachedDataElementList[LastElementIndex];
+        GuessElement = RandomElement;
+        switch (AmountofHints)
+        {
+            case < 1:
+                CurrentGuessingPlayer.AmountofHints++;
+                break;
+            case > 3:
+                CurrentGuessingPlayer.AmountofHints = 3;
+                break;
+        }
+        switch (AmountofHints)
+        {
+            case <= 1:
+                Hint1.text = RandomElement.ElementhintsList[0];
+                Hint2.text = "-";
+                Hint3.text = "-";
+                break;
+            case 2:
+                Hint1.text = RandomElement.ElementhintsList[0];
+                Hint2.text = RandomElement.ElementhintsList[1];
+                Hint3.text = "-";
+                break;
+            case >=3:
+                Hint1.text = RandomElement.ElementhintsList[0];
+                Hint2.text = RandomElement.ElementhintsList[1];
+                Hint3.text = RandomElement.ElementhintsList[2];
+                break;
+        }
+    }
+    /// <summary>
+    /// This method checks if the buttons answer was right
+    /// </summary>
+    private bool CheckAnswers(int? playerAnswer)
     {
         bool answer = false;
-        /*
-        if (currentQuestion.answer == playerAnswer)
+        if (GuessElement.Elementnnumber == playerAnswer)
         {
             answer = true;
         }
-        */
         return answer;
     }
-    private List<Data> getHintsList()
-    {
-        string jsontxt = File.ReadAllText(Application.dataPath + "/Resources/Hints.json");
-        List<Data> questionList = JsonConvert.DeserializeObject<List<Data>>(jsontxt);
-        return questionList;
-    }
+
     /// <summary>
     /// This method get called whenever the Question Coin is triggered, it fills in the questions and answers and stops time
     /// </summary>
-    public void QuetionPOP()
+    public void HintPOP()
     {
-        DisplayQuestionUI.SetActive(true);
-        //FillinQuestions();
-        pauseGame();
+        FillInUI();
+        OpenHintsUI();
     }
     /// <summary>
     /// This method shows the right annswer after the player got it wrong andgives feedback on what to do next
     /// </summary>
-    public void WrongAnswer() 
+    public void GoodAnswer()
     {
-        wrongAnswerPanel.SetActive(true);
-        /*
-        AnswerA.text = currentQuestion.answer;
-        AnswerB.text = "you got the answer wrong";
-        AnswerC.text = "you lose a heart";
-        AnswerD.text = "press any key to continue";
-        */
-        wrongAnswer = true;
+        PointUpEvent();
+        CurrentGuessingPlayer.CurrentElementIndex = -1;
+        CurrentGuessingPlayer.AmountofHints = 0;
+        TurnOffUI();
+        TurnOnTurnUI("Good Answer");
     }
-    public void closeQuestionUI()
+    public void WrongAnswer()
     {
-        wrongAnswerPanel.SetActive(false);
-        DisplayQuestionUI.SetActive(false);
-        DisplayPowerUpUI.SetActive(false);
-        ResumeGame();
+        CurrentGuessingPlayer.AmountofHints++;
+        TurnOffUI();
+        TurnOnTurnUI("Wrong Guess, Next Try will give you an hint");
     }
-    public void closePowerUpUI()
+    private void PointUpEvent()
     {
-        DisplayPowerUpUI.SetActive(false);
-        ResumeGame();
+        IEvent events = PointUPEvent.GetComponent<IEvent>();
+        if (events != null)
+        {
+            events.playEvent("PointUP");
+        }
     }
-    private void pauseGame()
+    private void TurnEndEvent()
     {
-        GameIsinQuestion = true;
-        Time.timeScale = 0f;
+        IEvent events = EndTurnEvent.GetComponent<IEvent>();
+        if (events != null)
+        {
+            events.playEvent("EndTurn");
+        }
     }
-    private void ResumeGame()
+    public void TurnOffVisuals()
     {
-        GameIsinQuestion = false;
-        Time.timeScale = 1f;
+        VisualsUI.SetActive(false);
+        GuessUI.SetActive(false);
+        EndUI.SetActive(false);
+        EndText.SetActive(false);
+        EndButton.SetActive(false);
+        EndClickText.SetActive(false);
+
+        TurnEndEvent();
     }
-    //Variable names should awlays match the json and its case senstive
+    public void TurnOnTurnUI(string Text)
+    {
+        VisualsUI.SetActive(true);
+        GuessUI.SetActive(true);
+        EndUI.SetActive(true);
+        EndText.SetActive(true);
+        EndText.transform.GetComponent<Text>().text = Text;
+        EndClickText.SetActive(true);
+        EndButton.SetActive(true);
+    }
+    private string ChosenDiffucultyConverter(Difficulty chosenDiffuculty)
+    {
+        string ReturnDiffuculty = "";
+        switch (chosenDiffuculty)
+        {
+            case Difficulty.Easy:
+                ReturnDiffuculty = "Easy";
+                break;
+            case Difficulty.Hard:
+                ReturnDiffuculty = "Hard";
+                break;
+        }
+        return ReturnDiffuculty;
+    }
+    public void OpenHintsUI()
+    {
+        VisualsUI.SetActive(true);
+        GuessUI.SetActive(true);
+        HintsUI.SetActive(true);
+        PeriodicUI.SetActive(false);
+    }
+    public void OpenPeriodicUI()
+    {
+        HintsUI.SetActive(false);
+        PeriodicUI.SetActive(true);
+    }
+    public void TurnOffUI()
+    {
+        VisualsUI.SetActive(false);
+        GuessUI.SetActive(false);
+        HintsUI.SetActive(false);
+        PeriodicUI.SetActive(false);
+    }
+    public void ContinueGameUI()
+    {
+        CurrentGuessingPlayer.AmountofHints++;
+        VisualsUI.SetActive(false);
+        GuessUI.SetActive(false);
+        HintsUI.SetActive(false);
+        PeriodicUI.SetActive(false);
+        TurnOffVisuals();
+    }
+
+    /// <summary>
+    /// Variable names should awlays match the json and its case senstive So i left these lowercase
+    /// </summary>
     [System.Serializable]
     public class Data
     {
-        [JsonProperty("difficultyid")]   private int difficultyid;
+        [JsonProperty("difficultyid")] private int difficultyid;
         [JsonProperty("difficultytype")] private string difficultytype;
-        [JsonProperty("elementlist")]    private List<Element> elementlist;
+        [JsonProperty("elementlist")] private List<Element> elementlist;
         public int Difficultyid
         {
             get { return difficultyid; }
@@ -169,9 +328,10 @@ public class HintsController : MonoBehaviour
     [System.Serializable]
     public class Element
     {
-        [JsonProperty("elementid")]    private int elementid;
-        [JsonProperty("elementname")]  private string elementname;
-        [JsonProperty("elementcode")]  private string elementcode;
+        [JsonProperty("elementid")] private int elementid;
+        [JsonProperty("elementname")] private string elementname;
+        [JsonProperty("elementcode")] private string elementcode;
+        [JsonProperty("elementnnumber")] private int elementnnumber;
         [JsonProperty("elementhints")] private List<string> elementhintsList;
         public int Elementid
         {
@@ -184,6 +344,10 @@ public class HintsController : MonoBehaviour
         public string Elementcode
         {
             get { return elementcode; }
+        }
+        public int Elementnnumber
+        {
+            get { return elementnnumber; }
         }
         public List<string> ElementhintsList
         {
