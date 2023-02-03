@@ -27,6 +27,9 @@ public class NodesController : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// This method fills in each tile and add them together to become route
+    /// </summary>
     private void FillNodes() 
     {
         ClearNodeList();

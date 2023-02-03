@@ -56,6 +56,10 @@ public class MapWindow : MonoBehaviour
         TextCheck();
         UpdateStartButton();
     }
+
+    /// <summary>
+    /// This method Sets everything in line for the controller to start working
+    /// </summary>
     private void Setup()
     {
         PlayerAmount = GameSetupStats.GetPlayerAmount();
@@ -113,6 +117,10 @@ public class MapWindow : MonoBehaviour
             StartButton.GetComponent<Button>().interactable = true;
         }
     }
+    /// <summary>
+    /// this methos is also ui but its made to be dynamic with the player amount to activate or deactivate with the amount
+    /// </summary>
+    /// <param name="Amount"></param>
     private void ActivateFields(int Amount) 
     {
         switch (Amount)
@@ -159,6 +167,9 @@ public class MapWindow : MonoBehaviour
                 break;
         }
     }
+    /// <summary>
+    /// this method save the names set at the beginning so player can have their names in game
+    /// </summary>
     private List<PlayerStats> SavePlayers()
     {
         List<PlayerStats> ReturnList = new List<PlayerStats>(); 
@@ -220,8 +231,7 @@ public class MapWindow : MonoBehaviour
                     break;
             }
             player.playerscore = 0;
-            player.debuffs = new List<Debuff>();
-            player.powerups = new List<PowerUP>();
+            player.BuffsAndDebuffsList = new List<BuffsAndDebuffs>();
             ReturnList.Add(player);
         }
         return ReturnList;
@@ -249,6 +259,7 @@ public class MapWindow : MonoBehaviour
     }
     public void StartGame()
     {
+        GameController.didTheGameSetup = false;
         GameSetupStats.SetGameState(GameState.RollOrder);
         GameSetupStats.SetplayerList(SavePlayers());
         Loader.Load(ConvertMapToScene());

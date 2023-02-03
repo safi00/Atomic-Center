@@ -18,6 +18,10 @@ public class GameSetupStats : MonoBehaviour
     [Header("Player Stats")]
     [SerializeField] public static List<PlayerStats> PlayersList;
 
+    /// <summary>
+    /// this This entire controller is just to pass information on 
+    /// it gets info from the ui main wiindow and passes it on to the gamecontroller script
+    /// </summary>
     // Start is called before the first frame update
     void Start()
     {
@@ -146,10 +150,8 @@ public class GameSetupStats : MonoBehaviour
     public enum GameState
     {
         Setup,
-        Instructions,
         RollOrder,
         Playing,
-        Paused,
         GameOver,
         Stats,
     }
@@ -158,17 +160,12 @@ public class GameSetupStats : MonoBehaviour
         Map1,
         Map2,
     }
-    public enum PowerUP
+    public enum BuffsAndDebuffs
     {
-        BonusD6,
-        BonusD10,
-        StealD6,
-        Teleport,
-    }
-    public enum Debuff
-    {
-        StolenD6,
-        StolenPowerUP,
+        PlusD6,
+        Plus3,
+        Minus3,
+        MinusD6,
     }
     public class PlayerStats
     {
@@ -176,7 +173,6 @@ public class GameSetupStats : MonoBehaviour
         public string playername { get; set; }
         public int playerscore { get; set; }
         public int playerlocation { get; set; }
-        public List<Debuff> debuffs { get; set; }
-        public List<PowerUP> powerups { get; set; }
+        public List<BuffsAndDebuffs> BuffsAndDebuffsList { get; set; }
     }
 }

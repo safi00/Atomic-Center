@@ -1,0 +1,222 @@
+[
+  {
+    "questionid": 0,
+    "questiontext": "How many rows does the periodic table have?",
+    "correctanswer": "Seven. (7)",
+    "answerlist": [
+      "Seven. (7)",
+      "Two. (2)",
+      "Five. (5)"
+    ]
+  },
+  {
+    "questionid": 1,
+    "questiontext": "How many groups does the periodic table have?",
+    "correctanswer": "Eighteen. (18)",
+    "answerlist": [
+      "Eighteen. (18)",
+      "Fifteen. (15)",
+      "Twenty-one. (21)"
+    ]
+  },
+  {
+    "questionid": 2,
+    "questiontext": "Name two characteristics of a metal?",
+    "correctanswer": "Malleable, conducts electricity",
+    "answerlist": [
+      "Malleable, conducts electricity",
+      "Shiny, does not conduct heat",
+      "Soft, bendable"
+    ]
+  },
+  {
+    "questionid": 3,
+    "questiontext": "Name two groups in the periodic table?",
+    "correctanswer": "Alkali metals, halogens",
+    "answerlist": [
+      "Alkali metals, halogens",
+      "Rainbow, carbon",
+      "Noble gases, black"
+    ]
+  },
+  {
+    "questionid": 4,
+    "questiontext": "What is the atomic number and why is it important to classify the periodic table?",
+    "correctanswer": "The atomic number is the number of protons within an element's nucleus, the higher the number is, the heavier the atom is and the periodic table is classified from the lightest element to the heaviest.",
+    "answerlist": [
+      "The atomic number is the number of protons within an element's nucleus, the higher the number is, the heavier the atom is and the periodic table is classified from the lightest element to the heaviest.",
+      "An atomic number is the unique number assigned to identify a connection to the public atomic network.",
+      "The atomic number is a sequence of letters and numbers that you need when doing international transactions and other banking matters."
+    ]
+  },
+  {
+    "questionid": 5,
+    "questiontext": "Why is Helium used as a filler, while hydrogen is lighter?",
+    "correctanswer": "Because Hydrogen is highly flammable",
+    "answerlist": [
+      "Because Hydrogen is highly flammable",
+      "Because Helium is lighter than air",
+      "Helium is not flammable"
+    ]
+  },
+  {
+    "questionid": 6,
+    "questiontext": "What is the first artificial element?",
+    "correctanswer": "Technetium",
+    "answerlist": [
+      "Technetium",
+      "Curium",
+      "Fubnium"
+    ]
+  },
+  {
+    "questionid": 7,
+    "questiontext": "What is the most abundant element in the human body (by weight)?",
+    "correctanswer": "Oxygen",
+    "answerlist": [
+      "Oxygen",
+      "Carbon",
+      "Helium"
+    ]
+  },
+  {
+    "questionid": 8,
+    "questiontext": "Which metal has the highest melting point?",
+    "correctanswer": "Tungsten",
+    "answerlist": [
+      "Tungsten",
+      "Gold",
+      "Iron"
+    ]
+  },
+  {
+    "questionid": 9,
+    "questiontext": "Which metal has the lowest melting point?",
+    "correctanswer": "Mercury",
+    "answerlist": [
+      "Mercury",
+      "Tungsten",
+      "Iron"
+    ]
+  },
+  {
+    "questionid": 10,
+    "questiontext": "What is the heaviest element?",
+    "correctanswer": "Oganesson",
+    "answerlist": [
+      "Oganesson",
+      "Gold",
+      "Silver"
+    ]
+  },
+  {
+    "questionid": 11,
+    "questiontext": "Which group does radium belong to?",
+    "correctanswer": "Alkaline earth metals",
+    "answerlist": [
+      "Alkaline earth metals",
+      "Halogens",
+      "Noble gases"
+    ]
+  },
+  {
+    "questionid": 12,
+    "questiontext": "How many elements can you find in the periodic table?",
+    "correctanswer": "118",
+    "answerlist": [
+      "118",
+      "181",
+      "42"
+    ]
+  },
+  {
+    "questionid": 13,
+    "questiontext": "Is the periodic table complete?",
+    "correctanswer": "Not necessarily. In theory, it is possible to make the next element in the sequence, number 119, in a lab",
+    "answerlist": [
+      "Not necessarily. In theory, it is possible to make the next element in the sequence, number 119, in a lab",
+      "YES",
+      "No"
+    ]
+  },
+  {
+    "questionid": 14,
+    "questiontext": "Graphite, one of the softest known solids, and the hardest known natural mineral, diamond, are both bizarrely manifestations of the same chemical element. Which element is that?",
+    "correctanswer": "Carbon",
+    "answerlist": [
+      "Carbon",
+      "Nitrogen",
+      "Helium"
+    ]
+  },
+  {
+    "questionid": 15,
+    "questiontext": "What is Sublimation?",
+    "correctanswer": "A chemical process in which a substance changes from solid phase directly to gaseous phase.",
+    "answerlist": [
+      "A chemical process in which a substance changes from solid phase directly to gaseous phase.",
+      "The process by which one oceanic plate slides under another oceanic or continental plate.",
+      "Means a mixture of two substances where one substance is mixed with the other substance in very small particles."
+    ]
+  },
+  {
+    "questionid": 16,
+    "questiontext": "What is the heaviest naturally occurring noble gas?",
+    "correctanswer": "Radon",
+    "answerlist": [
+      "Radon",
+      "Neon",
+      "Krypton"
+    ]
+  },
+  {
+    "questionid": 17,
+    "questiontext": "What is the heaviest element with a one-letter atomic symbol?",
+    "correctanswer": "Uranium",
+    "answerlist": [
+      "Uranium",
+      "Calcium",
+      "Porte"
+    ]
+  },
+  {
+    "questionid": 18,
+    "questiontext": "What is the symbol of sodium?",
+    "correctanswer": "Na",
+    "answerlist": [
+      "Na",
+      "Nt",
+      "Nu"
+    ]
+  },
+  {
+    "questionid": 19,
+    "questiontext": "Name one of the two elements that are most abundant in the Earth's crust by weight.",
+    "correctanswer": "Silicon or oxygen",
+    "answerlist": [
+      "Silicon or oxygen",
+      "Silicon or water",
+      "Oxygen or water"
+    ]
+  },
+  {
+    "questionid": 20,
+    "questiontext": "How many protons does magnesium have?",
+    "correctanswer": "12",
+    "answerlist": [
+      "12",
+      "6",
+      "10"
+    ]
+  },
+  {
+    "questionid": 21,
+    "questiontext": "What is the heaviest element that can be produced by fusion in a star?",
+    "correctanswer": "Iron",
+    "answerlist": [
+      "Iron",
+      "Helium",
+      "Beryllium"
+    ]
+  }
+]

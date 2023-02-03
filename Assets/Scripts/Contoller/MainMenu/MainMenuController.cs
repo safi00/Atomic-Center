@@ -40,6 +40,9 @@ public class MainMenuController : MonoBehaviour
     {
         TextCheck();
     }
+    /// <summary>
+    /// this entire script is litterally all ui
+    /// </summary>
     public void BackToMainMenu()
     {
         GameSetupWindow.SetActive(false);

@@ -49,15 +49,19 @@ public class HintsController : MonoBehaviour
     [SerializeField] public bool isElementGuessed;
     [SerializeField] public bool wrongAnswer;
     [HideInInspector] public static int? MyChosenElement;
+    [HideInInspector] public static bool didHintsSetup;
 
     // Start is called before the first frame update
     void Start()
     {
-        Setup();
     }
     // Update is called once per frame
     void Update()
     {
+        if (!didHintsSetup)
+        {
+            Setup();
+        }
         if (MyChosenElement != null)
         {
             Debug.Log(MyChosenElement);
@@ -134,23 +138,6 @@ public class HintsController : MonoBehaviour
     }
 
     /// <summary>
-    /// This method prepares the answers and grabs a random index between 0,1 and 2 & 
-    /// adds it again and then change that specific indexso its always random and not the same button as the right answer.
-    /// </summary>
-    private List<string> RandomizeAnswers(List<string> falseAnswers, string rightAnswer)
-    {
-        List<string> answers = new List<string>();
-        int randomPlacement = Random.Range(0, 3);
-        for (int i = 0; i < 3; i++)
-        {
-            answers.Add(falseAnswers[i]);
-        }
-        answers.Add(falseAnswers[randomPlacement]);
-        answers[randomPlacement] = rightAnswer;
-        return answers;
-    }
-
-    /// <summary>
     /// This method checks if the buttons answer was right
     /// </summary>
     private void UpdateElements(int LastElementIndex)
@@ -207,7 +194,7 @@ public class HintsController : MonoBehaviour
         OpenHintsUI();
     }
     /// <summary>
-    /// This method shows the right annswer after the player got it wrong andgives feedback on what to do next
+    /// This method shows that the player chose right annswer and gives feedback on what to do next
     /// </summary>
     public void GoodAnswer()
     {
@@ -217,12 +204,18 @@ public class HintsController : MonoBehaviour
         TurnOffUI();
         TurnOnTurnUI("Good Answer");
     }
+    /// <summary>
+    /// This method shows that the player chose bad annswer and gives feedback on what to do next
+    /// </summary>
     public void WrongAnswer()
     {
         CurrentGuessingPlayer.AmountofHints++;
         TurnOffUI();
         TurnOnTurnUI("Wrong Guess, Next Try will give you an hint");
     }
+    /// <summary>
+    /// These methods are events so they trigger all over the project
+    /// </summary>
     private void PointUpEvent()
     {
         IEvent events = PointUPEvent.GetComponent<IEvent>();
@@ -239,6 +232,10 @@ public class HintsController : MonoBehaviour
             events.playEvent("EndTurn");
         }
     }
+
+    /// <summary>
+    /// These methods are for ui
+    /// </summary>
     public void TurnOffVisuals()
     {
         VisualsUI.SetActive(false);

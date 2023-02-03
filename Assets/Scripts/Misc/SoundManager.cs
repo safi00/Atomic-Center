@@ -35,6 +35,10 @@ public class SoundManager : MonoBehaviour
         float volumeTemp = AudioListener.volume * 100;
         switch (volumeTemp)
         {
+            case 1f:
+                AudioListener.volume = 0.05f;
+                volume = AudioListener.volume * 100;
+                break;
             case < 100f:
                 AudioListener.volume += 0.05f;
                 volume = AudioListener.volume * 100;
@@ -46,11 +50,11 @@ public class SoundManager : MonoBehaviour
         float volumeTemp = AudioListener.volume * 100;
         switch (volumeTemp)
         {
-            case >= 6f:
+            case >= 7f:
                 AudioListener.volume -= 0.05f;
                 volume = AudioListener.volume * 100;
                 break;
-            case <= 5f:
+            case <= 6f:
                 AudioListener.volume = 0.01f;
                 volume = AudioListener.volume * 100;
                 break;

@@ -10,16 +10,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public string PlayerName;
     [SerializeField] public int PlayerScore;
     [SerializeField] public int PlayerLocation;
-    [SerializeField] public List<Debuff> PlayerDebuffList;
-    [SerializeField] public List<PowerUP> PlayerPowerUPList;
+    [SerializeField] public List<BuffsAndDebuffs> PlayerBuffsAndDebuffsList;
+
+    [Header("MovementStats")]
+    [SerializeField] private int MinSteps;
+    [SerializeField] private int MaxSteps;
+    [SerializeField] private int DiceChanger;
+    [SerializeField] private float MovementSpeed;
 
     [Header("Hint Stats")]
     [SerializeField] public int CurrentElementIndex;
     [SerializeField] public int AmountofHints;
-
-    [Header("MovementStats")]
-    [SerializeField] private int MaxSteps;
-    [SerializeField] private float MovementSpeed;
 
     [Header("Hidden MovementStats")]
     [HideInInspector] public  int  RouteSteps;
@@ -41,16 +42,21 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] private Animator Anim;
     [HideInInspector] private Coroutine LookCoroutine;
     [SerializeField] public Transform TargetToLookAt;
-    [SerializeField] public float Speed = 3.5f;
+    [SerializeField] public float Speed = 5f;
+    [HideInInspector] public static bool didCharacterSetup;
 
     // Start is called before the first frame update
     void Start()
     {
-        Anim = gameObject.GetComponentInChildren<Animator>();
     }
     // Update is called once per frame
     void Update()
     {
+        if (!didCharacterSetup)
+        {
+            Anim = gameObject.GetComponentInChildren<Animator>();
+            MinSteps = 1;
+        }
         WalkingAnimation();
     }
     public void RollHeir()
@@ -63,8 +69,20 @@ public class PlayerMovement : MonoBehaviour
     }
     public void Roll()
     {
-        RouteSteps = Random.Range(1, (MaxSteps + 1));
-        GameController.LogString = PlayerName + " Rolled: " + RouteSteps;
+        DiceChanger = BuffsAndDebuffsCalculator();
+        RouteSteps = (Random.Range(MinSteps, (MaxSteps + 1)) + DiceChanger);
+        if (RouteSteps <= 0)
+        {
+            RouteSteps = 0;
+        }
+        if (DiceChanger == 0)
+        {
+            GameController.LogString = PlayerName + " Rolled: " + RouteSteps;
+        }
+        else
+        {
+            GameController.LogString = PlayerName + " Rolled: " + RouteSteps + "  ( With " + DiceChanger + " )";
+        }
         LogEvent(); 
 
         CurrentElementIndex = -1;
@@ -80,6 +98,34 @@ public class PlayerMovement : MonoBehaviour
         PlayerLocation = RoutePosition;
         GameController.NodeEventType = CurrentRoute.ChildNodeTypeList[RoutePosition];
         EventTriggerEvent();
+    }
+    private int BuffsAndDebuffsCalculator()
+    {
+        int DiceChangerInt = 0;
+        int BnDListCount = PlayerBuffsAndDebuffsList.Count;
+        if (BnDListCount > 0)
+        {
+            for (int i = 0; i < BnDListCount; i++)
+            {
+                switch (PlayerBuffsAndDebuffsList[i])
+                {
+                    case BuffsAndDebuffs.MinusD6:
+                        DiceChangerInt = DiceChangerInt - Random.Range(1, (6 + 1));
+                        break;
+                    case BuffsAndDebuffs.Minus3:
+                        DiceChangerInt = DiceChangerInt - 3;
+                        break;
+                    case BuffsAndDebuffs.PlusD6:
+                        DiceChangerInt = DiceChangerInt + Random.Range(1, (6 + 1));
+                        break;
+                    case BuffsAndDebuffs.Plus3:
+                        DiceChangerInt = DiceChangerInt + 3;
+                        break;
+                }
+            }
+        }
+        PlayerBuffsAndDebuffsList.Clear();
+        return DiceChangerInt;
     }
     IEnumerator Move()
     {

@@ -37,6 +37,9 @@ public class Customwindow : MonoBehaviour
         TextCheck();
     }
 
+    /// <summary>
+    /// These methods are for ui
+    /// </summary>
     public void ValueUp()
     {
         if (!isThereAnythingWritten)
@@ -113,6 +116,9 @@ public class Customwindow : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// These methods are for ui
+    /// </summary>
     private void TextCheck()
     {
         bool TurnOffButtons = false;
@@ -141,6 +147,10 @@ public class Customwindow : MonoBehaviour
     {
         SetupForResuseTurnPoint = Number;
     }
+
+    /// <summary>
+    /// This method saves the input to start a game
+    /// </summary>
     private void SaveInput()
     {
         int InputInt;
@@ -179,6 +189,10 @@ public class Customwindow : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// These methods are for ui
+    /// </summary>
     public void Exit()
     {
         SaveInput();
@@ -187,6 +201,10 @@ public class Customwindow : MonoBehaviour
         isThereSetup = false;
         CustomWindow.SetActive(false);        
     }
+
+    /// <summary>
+    /// This method Sets everything in line for the controller to start working
+    /// </summary>
     private void Setup()
     {
         if (!isThereSetup)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +23,7 @@ public class VolumeButtons : MonoBehaviour
         SoundManager.Instance.VolumeUp();
         if (!isMuted)
         {
-            volume.text = "Volume: " + SoundManager.volume + "%";
+            volume.text = "Volume: " + RoundDown(SoundManager.volume) + "%";
         }
     }
     public void VolumeDown()
@@ -30,11 +31,11 @@ public class VolumeButtons : MonoBehaviour
         SoundManager.Instance.VolumeDown();
         if (!isMuted)
         {
-            volume.text = "Volume: " + SoundManager.volume + "%";
+            volume.text = "Volume: " + RoundDown(SoundManager.volume) + "%";
         }
     }
     //Mute button
-    public void toggle()
+    public void Toggle()
     {
         if (!toggleMusic)
         {
@@ -46,8 +47,14 @@ public class VolumeButtons : MonoBehaviour
             }
             else
             {
-                volume.text = "Volume: " + SoundManager.volume + "%";
+                volume.text = "Volume: " + RoundDown(SoundManager.volume) + "%";
             }
         }
+    }
+    private int RoundDown(float NumberWithDecimal)
+    {
+        float FloatToConvert = NumberWithDecimal;
+        int IntRoundedDown = (int)Math.Round(FloatToConvert);
+        return IntRoundedDown;
     }
 }
